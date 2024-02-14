@@ -9,3 +9,5 @@ Then copy IP address in console and paste it into web brower
 
 To stop the enviroment, type in the terminal
 1. exit
+
+TEST
