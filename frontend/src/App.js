@@ -1,4 +1,4 @@
-import { Switch } from "./Switch";
+import { Switch } from "./Switch.js";
 
 // adding the routes to the app
 
