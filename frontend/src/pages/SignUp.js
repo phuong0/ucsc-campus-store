@@ -11,10 +11,9 @@ import Typography from "@mui/material/Typography";
 import cat from "../assets/cute_cat.jpg";
 
 /*
-- Sign in page with image on the side
+- sign up page
 */
 
-const originUrl = window.location.origin;
 
 function Copyright(props) {
     return (
@@ -34,8 +33,7 @@ function Copyright(props) {
     );
 }
 
-export default function SignIn() {
-
+export default function SignUp() {
     return (
         <Grid container component="main" sx={{ height: "100vh" }}>
             <CssBaseline />
@@ -67,13 +65,33 @@ export default function SignIn() {
                 >
                     <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Sign up
                     </Typography>
                     <Box
                         component="form"
                         noValidate
                         sx={{ mt: 1 }}
                     >
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="First Name"
+                            label="First Name"
+                            type="First Name"
+                            id="First Name"
+                            autoComplete="First Name"
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="Last Name"
+                            label="Last Name"
+                            type="Last Name"
+                            id="Last Name"
+                            autoComplete="Last Name"
+                        />
                         <TextField
                             margin="normal"
                             required
@@ -94,26 +112,23 @@ export default function SignIn() {
                             id="password"
                             autoComplete="current-password"
                         />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="Confirm password"
+                            label="Confirm password"
+                            type="password"
+                            id="confirm-password"
+                        />
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Sign Up
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href={originUrl + "/forget_password"} variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href={originUrl + "/signup"} variant="body2">
-                                    {"Don't have an account? Sign Up"}
-                                </Link>
-                            </Grid>
-                        </Grid>
                         <Copyright sx={{ mt: 5 }} />
                     </Box>
                 </Box>
