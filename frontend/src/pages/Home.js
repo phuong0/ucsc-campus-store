@@ -25,7 +25,7 @@ export default function Home() {
         <Container>
             <CssBaseline />
             <Container maxWidth="lg">
-                <Header title="Tutoring Slugs" sections={sections} />
+                <Header title="Data Analysis" sections={sections} />
                 <main>
                     <Paper
                         sx={{
