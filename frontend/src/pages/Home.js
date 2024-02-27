@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import cat from "../assets/cute_cat.jpg";
+import UploadFile from '../components/uploadFile';
 
 /*
 - homepage for data
@@ -21,6 +22,11 @@ const sections = [
 ];
 
 export default function Home() {
+    const [file, setFile] = React.useState({
+        selectedFile: "",
+    });
+    
+    console.log(file.selectedFile);
     return (
         <Container>
             <CssBaseline />
@@ -56,7 +62,7 @@ export default function Home() {
                                     alignItems="center"
                                 >
                                     <Grid item>
-                                        <Button variant="contained">Import</Button>
+                                        <UploadFile setFile={setFile} />
                                     </Grid>
                                 </Grid>
                             </Grid>
