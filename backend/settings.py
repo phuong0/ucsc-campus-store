@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'campussorting',
+        'USER': 'user',
+        'PASSWORD': 'ilovejullig',
+        'HOST': '35.223.152.18', 
+        'PORT': '3306',
     }
 }
 
