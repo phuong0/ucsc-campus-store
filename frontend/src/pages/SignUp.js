@@ -14,6 +14,8 @@ import cat from "../assets/cute_cat.jpg";
 - sign up page
 */
 
+import React, { useState } from "react";
+import axios from "axios";
 
 function Copyright(props) {
     return (
@@ -34,6 +36,32 @@ function Copyright(props) {
 }
 
 export default function SignUp() {
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post("/create_data/", formData);
+            console.log(response.data); 
+        } catch (error) {
+            console.error("Error:", error); 
+        }
+    };
+
     return (
         <Grid container component="main" sx={{ height: "100vh" }}>
             <CssBaseline />
@@ -70,56 +98,44 @@ export default function SignUp() {
                     <Box
                         component="form"
                         noValidate
+                        onSubmit = {handleSubmit}
                         sx={{ mt: 1 }}
                     >
                         <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="First Name"
+                            onChange={handleChange}
+                            value={formData.firstName}
+                            name="firstName"
                             label="First Name"
-                            type="First Name"
-                            id="First Name"
-                            autoComplete="First Name"
-                        />
-                        <TextField
-                            margin="normal"
                             required
                             fullWidth
-                            name="Last Name"
-                            label="Last Name"
-                            type="Last Name"
-                            id="Last Name"
-                            autoComplete="Last Name"
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
                             autoFocus
                         />
                         <TextField
-                            margin="normal"
+                            onChange={handleChange}
+                            value={formData.lastName}
+                            name="lastName"
+                            label="Last Name"
                             required
                             fullWidth
+                        />
+                        <TextField
+                            onChange={handleChange}
+                            value={formData.email}
+                            name="email"
+                            label="Email Address"
+                            required
+                            fullWidth
+                            autoComplete="email"
+                        />
+                        <TextField
+                            onChange={handleChange}
+                            value={formData.password}
                             name="password"
                             label="Password"
                             type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
-                        <TextField
-                            margin="normal"
                             required
                             fullWidth
-                            name="Confirm password"
-                            label="Confirm password"
-                            type="password"
-                            id="confirm-password"
+                            autoComplete="current-password"
                         />
                         <Button
                             type="submit"
