@@ -1,4 +1,3 @@
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,7 +13,7 @@ import cat from "../assets/cute_cat.jpg";
 - sign up page
 */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 function Copyright(props) {
@@ -37,11 +36,10 @@ function Copyright(props) {
 
 export default function SignUp() {
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
+        firstname: "",
+        lastname: "",
         email: "",
-        password: "",
-        confirmPassword: "",
+        passcode: "",
     });
 
     const handleChange = (e) => {
@@ -55,10 +53,10 @@ export default function SignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("/create_data/", formData);
-            console.log(response.data); 
+            const response = await axios.post("/create-data/", formData);
+            console.log(response.data); // Handle success response
         } catch (error) {
-            console.error("Error:", error); 
+            console.error("Error:", error); // Handle error
         }
     };
 
@@ -103,8 +101,8 @@ export default function SignUp() {
                     >
                         <TextField
                             onChange={handleChange}
-                            value={formData.firstName}
-                            name="firstName"
+                            value={formData.firstname}
+                            name="firstname"
                             label="First Name"
                             required
                             fullWidth
@@ -112,8 +110,8 @@ export default function SignUp() {
                         />
                         <TextField
                             onChange={handleChange}
-                            value={formData.lastName}
-                            name="lastName"
+                            value={formData.lastname}
+                            name="lastname"
                             label="Last Name"
                             required
                             fullWidth
@@ -129,8 +127,8 @@ export default function SignUp() {
                         />
                         <TextField
                             onChange={handleChange}
-                            value={formData.password}
-                            name="password"
+                            value={formData.passcode}
+                            name="passcode"
                             label="Password"
                             type="password"
                             required
