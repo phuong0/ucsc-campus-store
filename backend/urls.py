@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from backend.views import create_data
+from backend.views import get_data
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
+    path('create-data/', create_data, name='create_data'),
+    path('get-data/', get_data, name='get_data'), 
 ]
