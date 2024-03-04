@@ -19,7 +19,7 @@ def create_account(request):
 
         with connection.cursor() as cursor:
             try:
-                cursor.execute("INSERT INTO accountinfo (username, email, firstname, lastname, passcode) VALUES (%s, %s, %s, %s, %s)",
+                cursor.execute("INSERT INTO accountinfo (email, firstname, lastname, passcode) VALUES (%s, %s, %s, %s)",
                                [email, firstname, lastname, passcode])
                 connection.commit()
                 return JsonResponse({'message': 'User created successfully'}, status=201)
