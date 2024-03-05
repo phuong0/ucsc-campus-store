@@ -2,9 +2,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db import connection
+from django.contrib.auth import authenticate
 
 @csrf_exempt
-
 
 def create_account(request):
     if request.method == 'POST':
@@ -42,3 +42,34 @@ def get_account(request):
     # Return the fetched data in JSON format
     return JsonResponse(data_list, safe=False)
 
+@csrf_exempt
+
+def get_login(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+    try:
+        # Get email and passcode from request body
+        data = json.loads(request.body)
+        email = data.get('email')
+        passcode = data.get('passcode')
+
+        # Check if email and passcode are provided
+        if not email or not passcode:
+            return JsonResponse({'error': 'Email and passcode are required'}, status=400)
+
+        # Query the database to check if email and passcode exist in accountinfo table
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) FROM accountinfo WHERE email = %s AND passcode = %s", [email, passcode])
+            result = cursor.fetchone()
+
+        # If no matching record found, return error
+        if result[0] == 0:
+            return JsonResponse({'error': 'Invalid email or passcode'}, status=401)
+
+        # If email and passcode exist, return success message
+        return JsonResponse({'message': 'Login successful'}, status=200)
+
+    except Exception as e:
+        # Handle exceptions, if any
+        return JsonResponse({'error': str(e)}, status=500)

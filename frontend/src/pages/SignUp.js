@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,12 +11,12 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import cat from "../assets/cute_cat.jpg";
 
+import {createAccount} from "../server"
 /*
 - sign up page
 */
 
-import { useState } from "react";
-import axios from "axios";
+
 
 function Copyright(props) {
     return (
@@ -34,7 +36,7 @@ function Copyright(props) {
     );
 }
 
-export default function SignUp() {
+function SignUp() {
     const [formData, setFormData] = useState({
         firstname: "",
         lastname: "",
@@ -53,10 +55,12 @@ export default function SignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("/create-data/", formData);
-            console.log(response.data); // Handle success response
+            await createAccount(formData.email, formData.firstname, formData.lastname, formData.passcode);
+            // Handle success response if needed
+            console.log("Account created successfully!");
         } catch (error) {
-            console.error("Error:", error); // Handle error
+            // Handle error if needed
+            console.error("Error:", error);
         }
     };
 
@@ -140,7 +144,7 @@ export default function SignUp() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                        >
+                        >    
                             Sign Up
                         </Button>
                         <Copyright sx={{ mt: 5 }} />
@@ -150,3 +154,5 @@ export default function SignUp() {
         </Grid>
     );
 }
+
+export default SignUp;

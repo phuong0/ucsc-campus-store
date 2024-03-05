@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useState } from "react";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,6 +10,8 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import cat from "../assets/cute_cat.jpg";
+
+import {login} from "../server"
 
 /*
 - Sign in page with image on the side
@@ -34,7 +37,32 @@ function Copyright(props) {
     );
 }
 
-export default function SignIn() {
+function SignIn() {
+
+    const [formData, setFormData] = useState({
+        email: "",
+        passcode: "",
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await login(formData.email, formData.passcode);
+            // Check the loginResponse for success or error
+            console.log("Login Successful");
+        } catch (error) {
+            // Handle the error
+            console.error("Login Error:", error);
+        }
+    };
 
     return (
         <Grid container component="main" sx={{ height: "100vh" }}>
@@ -72,10 +100,13 @@ export default function SignIn() {
                     <Box
                         component="form"
                         noValidate
+                        onSubmit = {handleSubmit}
                         sx={{ mt: 1 }}
                     >
                         <TextField
                             margin="normal"
+                            onChange={handleChange}
+                            value={formData.email}
                             required
                             fullWidth
                             id="email"
@@ -86,12 +117,13 @@ export default function SignIn() {
                         />
                         <TextField
                             margin="normal"
-                            required
-                            fullWidth
-                            name="password"
+                            onChange={handleChange}
+                            value={formData.passcode}
+                            name="passcode"
                             label="Password"
                             type="password"
-                            id="password"
+                            required
+                            fullWidth
                             autoComplete="current-password"
                         />
                         <Button
@@ -121,3 +153,5 @@ export default function SignIn() {
         </Grid>
     );
 }
+
+export default SignIn;
