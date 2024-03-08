@@ -6,10 +6,10 @@ import Button from "@mui/material/Button";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Typography from '@mui/material/Typography';
-import ProjectDropdown from "../components/ProjectDropdown";
+import UploadFile from "../components/uploadFile";
 
 /*
-- homepage for data
+- project page
 */
 
 
@@ -19,18 +19,7 @@ const sections = [
     { title: "Change Password", url: originUrl + "/home" },
 ];
 
-export default function Home() {
-    const [projects, setProjects] = React.useState([]);
-
-    function parameterizeArray(key, value) {
-        return '?' + key + '=' + value;  
-    }
-
-    function goToProjects() {
-        var url = "/projects" + parameterizeArray('project', projects);
-        window.location.href = url;
-    }
-
+export default function Project() {
     return (
         <Container>
             <CssBaseline />
@@ -46,7 +35,7 @@ export default function Home() {
                             spacing={2}
                         >
                             <Typography variant="h5" color="inherit" paragraph>
-                                Select your project
+                                Import your data
                             </Typography>
                             <Grid
                                 item
@@ -55,13 +44,9 @@ export default function Home() {
                                 direction="row"
                                 justifyContent="center"
                                 alignItems="center"
-                                style={{ height: "100%" }}
                             >
                                 <Grid item>
-                                    <ProjectDropdown projects={projects} setProjects={setProjects}/>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant="contained" onClick={() => goToProjects()}>Go</Button>
+                                    <UploadFile variant="contained" />
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -4,7 +4,7 @@
 To start the project, start up the virtual enviroment
 1.  pipenv shell
 
-To start the backend, type these commands into the terminal in the backend folder
+To start the backend, type these commands into the terminal
 1. python manage.py runserver
 
 Then copy IP address in console and paste it into web brower
