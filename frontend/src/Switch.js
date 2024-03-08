@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, } from "react-router-
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Home from './pages/Home';
+import Project from "./pages/Project";
 
 // pages that you can navigate to
 
@@ -13,6 +14,7 @@ export const Switch = () => {
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/projects" element={<Project />} />
             </Routes>
         </Router>
     );

@@ -62,6 +62,7 @@ function SignIn() {
             // Handle the error
             console.error("Login Error:", error);
         }
+        window.location.href = "/home";
     };
 
     return (
