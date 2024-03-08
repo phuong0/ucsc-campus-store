@@ -62,6 +62,7 @@ function SignUp() {
             // Handle error if needed
             console.error("Error:", error);
         }
+        window.location.href = "/signin";
     };
 
     return (
