@@ -102,7 +102,7 @@ function SignUp() {
                         component="form"
                         noValidate
                         onSubmit = {handleSubmit}
-                        sx={{ mt: 1 }}
+                        sx={{ mt:2 }}
                     >
                         <TextField
                             onChange={handleChange}
@@ -112,6 +112,7 @@ function SignUp() {
                             required
                             fullWidth
                             autoFocus
+                            sx={{ mt:5 }}
                         />
                         <TextField
                             onChange={handleChange}
@@ -120,7 +121,9 @@ function SignUp() {
                             label="Last Name"
                             required
                             fullWidth
+                            sx={{ mt:5 }}
                         />
+
                         <TextField
                             onChange={handleChange}
                             value={formData.email}
@@ -129,7 +132,9 @@ function SignUp() {
                             required
                             fullWidth
                             autoComplete="email"
+                            sx={{ mt:5 }}
                         />
+
                         <TextField
                             onChange={handleChange}
                             value={formData.passcode}
@@ -139,7 +144,9 @@ function SignUp() {
                             required
                             fullWidth
                             autoComplete="current-password"
+                            sx={{ mt:5 }}
                         />
+
                         <Button
                             type="submit"
                             fullWidth

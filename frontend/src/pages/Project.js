@@ -6,7 +6,9 @@ import Button from "@mui/material/Button";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Typography from '@mui/material/Typography';
+import TextField from "@mui/material/TextField";
 import UploadFile from "../components/uploadFile";
+import CategoryDropdown from "../components/CategoryDropdown";
 
 /*
 - project page
@@ -20,6 +22,8 @@ const sections = [
 ];
 
 export default function Project() {
+    const [categories, setCategories] = React.useState([]);
+
     return (
         <Container>
             <CssBaseline />
@@ -47,6 +51,51 @@ export default function Project() {
                             >
                                 <Grid item>
                                     <UploadFile variant="contained" />
+                                </Grid>
+                            </Grid>
+                            <Typography variant="h5" color="inherit" paragraph>
+                                Categories
+                            </Typography>
+                            <Grid
+                                item
+                                container
+                                spacing={6}
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Grid item>
+                                    <CategoryDropdown categories={categories} setCategories={setCategories}/>
+                                </Grid>
+                            </Grid>
+                            <Typography variant="h5" color="inherit" paragraph>
+                                Full Text Search
+                            </Typography>
+                            <Grid
+                                item
+                                container
+                                spacing={6}
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Grid item>
+                                    <TextField
+                                        margin="normal"
+                                        id="full-search"
+                                        label="Full Search"
+                                        name="full-search"
+                                        autoFocus
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ mt: 3 }}
+                                    >
+                                        Search
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </Grid>
