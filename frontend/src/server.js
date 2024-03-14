@@ -8,9 +8,9 @@ export const createAccount = async (email, firstname, lastname, passcode) => {
             lastname: lastname,
             passcode: passcode
         });
-        console.log(response.data); // Handle success response
+        console.log(response.data); 
     } catch (error) {
-        console.error("Error:", error); // Handle error
+        console.error("Error:", error); 
     }
 };
 
@@ -23,10 +23,30 @@ export const login = async (email, passcode) => {
                 email: email,
                 passcode: passcode
             });
-        console.log(response.data); // Handle success response
+        console.log(response.data); 
     } catch (error) {
-        console.error("Error:", error); // Handle error
+        console.error("Error:", error); 
     }
-};  
+}; 
+
+export const loadfile = async (filedata) => {
+    try {
+        const formData = new FormData();
+        formData.append('filedata', filedata); 
+
+        const response = await axios.post(
+            "http://localhost:8000/load-file/",
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+        console.log(response.data); 
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+};
 
 

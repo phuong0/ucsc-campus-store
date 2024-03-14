@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db import connection
 from django.contrib.auth import authenticate
-from backend.categories import categories
+#from backend.categories import categories
 import pandas as pd
 
 @csrf_exempt
@@ -76,6 +76,8 @@ def get_login(request):
         # Handle exceptions, if any
         return JsonResponse({'error': str(e)}, status=500)
 
+@csrf_exempt
+
 def get_categories(request):
     if request.method == 'POST':
         try:
@@ -94,5 +96,25 @@ def get_categories(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+    
+@csrf_exempt
+    
+def load_file(request):
+    if request.method == 'POST':
+        file_data = request.FILES.get('filedata')  
+
+        if not file_data:
+            return JsonResponse({'error': 'No file provided'}, status=400)
+
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute("INSERT INTO files (filedata) VALUES (%s)", [file_data.read()])
+                connection.commit()
+                return JsonResponse({'message': 'File uploaded successfully'}, status=201)
+            except Exception as e:
+                connection.rollback()
+                return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
