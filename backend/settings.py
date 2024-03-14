@@ -84,11 +84,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'campussorting',
-        'USER': 'user',
-        'PASSWORD': 'ilovejullig',
-        'HOST': '35.223.152.18', 
-        'PORT': '3306',
+        'NAME': 'defaultdb',
+        'USER': 'doadmin',
+        'PASSWORD': 'AVNS_oxuJWC3joQKwZYe5I83',
+        'HOST': 'campus-sorting-do-user-16055366-0.c.db.ondigitalocean.com', 
+        'PORT': '25060',
     }
 }
 
