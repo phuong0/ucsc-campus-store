@@ -3,6 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db import connection
 from django.contrib.auth import authenticate
+from backend.categories import categories
+import pandas as pd
 
 @csrf_exempt
 
@@ -73,3 +75,24 @@ def get_login(request):
     except Exception as e:
         # Handle exceptions, if any
         return JsonResponse({'error': str(e)}, status=500)
+
+def get_categories(request):
+    if request.method == 'POST':
+        try:
+            file = request.FILES['file']
+            
+            if file.name.endswith('.csv'):
+                df = pd.read_csv(file)
+            elif file.name.endswith('.xlsx'):
+                df = pd.read_excel(file)
+            else:
+                return JsonResponse({'error': 'Unsupported file format'}, status=400)
+            category_info = categories(df)
+
+            return JsonResponse(category_info, status=200)
+        
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)

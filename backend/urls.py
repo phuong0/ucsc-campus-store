@@ -19,10 +19,12 @@ from django.urls import path
 from backend.views import create_account
 from backend.views import get_account
 from backend.views import get_login
+from backend.views import get_categories
 
 urlpatterns = [
     path('admin/', admin.site.urls), 
     path('create-data/', create_account, name='create_data'),
     path('get-data/', get_account, name='get_data'), 
     path('get-login/', get_login, name='login'), 
+    path('get-catefories', get_categories, name='categories')
 ]
