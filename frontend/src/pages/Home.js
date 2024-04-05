@@ -5,6 +5,7 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
 import ProjectDropdown from "../components/ProjectDropdown";
 
@@ -31,6 +32,10 @@ export default function Home() {
         window.location.href = url;
     }
 
+    function createProject() {
+        // does nothing for now
+    }
+
     return (
         <Container>
             <CssBaseline />
@@ -38,6 +43,39 @@ export default function Home() {
                 <Header title="Cruz Store Analyzer" sections={sections} />
                 <main>
                     <Container container>
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            <Typography variant="h5" color="inherit" paragraph>
+                                Create your project
+                            </Typography>
+                            <Grid
+                                item
+                                container
+                                spacing={6}
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                                style={{ height: "100%" }}
+                            >
+                                <Grid item>
+                                    <TextField
+                                        margin="normal"
+                                        fullWidth
+                                        id="project"
+                                        label="Project name"
+                                        name="project"
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <Button variant="contained" onClick={() => createProject()}>Create</Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
                         <Grid
                             container
                             direction="row"
