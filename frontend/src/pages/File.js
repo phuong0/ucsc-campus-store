@@ -7,11 +7,10 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Typography from '@mui/material/Typography';
 import TextField from "@mui/material/TextField";
-import UploadFile from "../components/uploadFile";
 import CategoryDropdown from "../components/CategoryDropdown";
 
 /*
-- project page
+- files page
 */
 
 
@@ -21,18 +20,9 @@ const sections = [
     { title: "Change Password", url: originUrl + "/home" },
 ];
 
-export default function Project() {
+export default function File() {
+    const [categories, setCategories] = React.useState([]);
     const [files, setFiles] = React.useState([]);
-
-    function parameterizeArray(key, value) {
-        return '?' + key + '=' + value;  
-    }
-
-    function goToFiles() {
-        var url = "/files" + parameterizeArray('file', files);
-        window.location.href = url;
-    }
-
 
     return (
         <Container>
@@ -49,7 +39,7 @@ export default function Project() {
                             spacing={2}
                         >
                             <Typography variant="h5" color="inherit" paragraph>
-                                Import your data
+                                Categories
                             </Typography>
                             <Grid
                                 item
@@ -60,10 +50,37 @@ export default function Project() {
                                 alignItems="center"
                             >
                                 <Grid item>
-                                    <UploadFile variant="contained" />
+                                    <CategoryDropdown categories={categories} setCategories={setCategories}/>
+                                </Grid>
+                            </Grid>
+                            <Typography variant="h5" color="inherit" paragraph>
+                                Full Text Search
+                            </Typography>
+                            <Grid
+                                item
+                                container
+                                spacing={6}
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Grid item>
+                                    <TextField
+                                        margin="normal"
+                                        id="full-search"
+                                        label="Full Search"
+                                        name="full-search"
+                                        autoFocus
+                                    />
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="contained" onClick={() => goToFiles()}>Done</Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ mt: 3 }}
+                                    >
+                                        Search
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </Grid>

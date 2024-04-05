@@ -2,6 +2,8 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
+import {loadfile} from "../server"
+
 // actually uploading the transcript
 
 const VisuallyHiddenInput = styled('input')({
@@ -16,7 +18,8 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-export default function UploadFile(props) {
+export default function UploadFile() {
+    
     const changeHandler = (event) => {
         let file_type = event.target.files[0].type;
         if((file_type !== "text/csv") && (file_type !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")){
@@ -25,9 +28,22 @@ export default function UploadFile(props) {
             return;
         }
         alert("file is excel/cvs");
-        props.setFile({selectedFile: event.target.files[0]})
+    
+        // Call the loadfile function passing the file data
+        loadfile(event.target.files[0]);
+    };
+    
+    return (
+        <Button component="label" variant="contained">
+            Upload file
+            <VisuallyHiddenInput type="file" onChange={changeHandler} />
+        </Button>
+    );
+}
 
-        // backend work
+
+
+ // backend work
         // fetch("http://localhost:8080/user/uploadTranscript", {
         //     method: "POST",
         //     credentials: "include",
@@ -45,12 +61,3 @@ export default function UploadFile(props) {
         // }).catch((err) => {
         //     alert(err);
         // });
-    };
-
-    return (
-        <Button component="label" variant="contained" onChange={changeHandler}>
-            Upload file
-            <VisuallyHiddenInput type="file" multiple/>
-        </Button>
-    );
-}
