@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
 import ProjectDropdown from "../components/ProjectDropdown";
+import { Gif } from "@material-ui/icons";
 
 /*
 - homepage for data
@@ -24,7 +25,7 @@ export default function Home() {
     const [projects, setProjects] = React.useState([]);
 
     function parameterizeArray(key, value) {
-        return '?' + key + '=' + value;  
+        return '?' + key + '=' + value;
     }
 
     function goToProjects() {
@@ -33,6 +34,10 @@ export default function Home() {
     }
 
     function createProject() {
+        // does nothing for now
+    }
+
+    function deleteProject() {
         // does nothing for now
     }
 
@@ -48,60 +53,95 @@ export default function Home() {
                             direction="row"
                             justifyContent="center"
                             alignItems="center"
-                            spacing={2}
+                            spacing={10}
                         >
-                            <Typography variant="h5" color="inherit" paragraph>
-                                Create your project
-                            </Typography>
                             <Grid
-                                item
-                                container
-                                spacing={6}
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center"
-                                style={{ height: "100%" }}
-                            >
-                                <Grid item>
-                                    <TextField
-                                        margin="normal"
-                                        fullWidth
-                                        id="project"
-                                        label="Project name"
-                                        name="project"
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <Button variant="contained" onClick={() => createProject()}>Create</Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid
+                            item
                             container
-                            direction="row"
+                            direction="column"
                             justifyContent="center"
                             alignItems="center"
-                            spacing={2}
-                        >
-                            <Typography variant="h5" color="inherit" paragraph>
-                                Select your project
-                            </Typography>
-                            <Grid
-                                item
-                                container
-                                spacing={6}
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center"
-                                style={{ height: "100%" }}
-                            >
-                                <Grid item>
-                                    <ProjectDropdown projects={projects} setProjects={setProjects}/>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant="contained" onClick={() => goToProjects()}>Go</Button>
+                            xs="4">
+                                <Typography variant="h5" color="inherit" paragraph >
+                                    Create your project
+                                </Typography>
+                                <Grid
+                                    item
+                                    container
+                                    spacing={3}
+                                    direction="row"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    style={{ marginTop:"-24px" }}
+                                >
+                                    <Grid item>
+                                        <TextField
+                                            margin="normal"
+                                            fullWidth
+                                            id="project"
+                                            label="Project name"
+                                            name="project"
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained" onClick={() => createProject()}>Create</Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
+                            <Grid 
+                            item
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                            xs="4"
+                            >
+                                <Typography variant="h5" color="inherit" paragraph>
+                                    Delete your project
+                                </Typography>
+                                <Grid
+                                    item
+                                    container
+                                    direction="row"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    spacing={3}
+                                >
+                                    <Grid item>
+                                        <ProjectDropdown projects={projects} setProjects={setProjects} />
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained" onClick={() => deleteProject()}>Delete</Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid 
+                            item
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                            xs="4">
+                                <Typography variant="h5" color="inherit" paragraph>
+                                    Select your project
+                                </Typography>
+                                <Grid
+                                    item
+                                    container
+                                    direction="row"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    spacing={3}
+                                >
+                                    <Grid item>
+                                        <ProjectDropdown projects={projects} setProjects={setProjects} />
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained" onClick={() => goToProjects()}>Go</Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            
                         </Grid>
                     </Container>
                 </main>
