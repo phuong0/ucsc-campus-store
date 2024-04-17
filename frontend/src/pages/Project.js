@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -7,13 +7,11 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Typography from '@mui/material/Typography';
 import TextField from "@mui/material/TextField";
-import UploadFile from "../components/uploadFile";
-import CategoryDropdown from "../components/CategoryDropdown";
+import { loadfile } from "../server";
 
 /*
 - project page
 */
-
 
 const originUrl = window.location.origin;
 
@@ -21,59 +19,73 @@ const sections = [
     { title: "Change Password", url: originUrl + "/home" },
 ];
 
+
 export default function Project() {
-    const [files, setFiles] = React.useState([]);
+    const [historyFiles, setHistoryFiles] = useState([]);
+    const [currentFiles, setCurrentFiles] = useState([]);
+    const [fileInput, setFileInput] = useState('');
 
-    function parameterizeArray(key, value) {
-        return '?' + key + '=' + value;  
-    }
+    const handleFileChange = (event) => {
+        let file_type = event.target.files[0].type;
+        if ((file_type !== "text/csv") && (file_type !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            console.log(file_type);
+            alert("File type must be a csv, excel or spreadsheet");
+            return;
+        }
 
-    function goToFiles() {
-        var url = "/files" + parameterizeArray('file', files);
-        window.location.href = url;
-    }
+        // Call the loadfile function passing the file data
+        loadfile(event.target.files[0]);
+        setFileInput(event.target.files[0]);
+    };
 
+    const handleUpload = () => {
+        if (fileInput) {
+            // Update state based on current category
+            setCurrentFiles([...currentFiles, fileInput]);
+            setFileInput('');
+        }
+    };
 
     return (
         <Container>
-            <CssBaseline />
-            <Container maxWidth="lg">
-                <Header title="Cruz Store Analyzer" sections={sections} />
-                <main>
-                    <Container container>
-                        <Grid
-                            container
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                            spacing={2}
-                        >
-                            <Typography variant="h5" color="inherit" paragraph>
-                                Import your data
-                            </Typography>
-                            <Grid
-                                item
-                                container
-                                spacing={6}
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center"
-                            >
-                                <Grid item>
-                                    <UploadFile variant="contained" />
-                                </Grid>
-                                <Grid item>
-                                    <Button variant="contained" onClick={() => goToFiles()}>Done</Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Container>
-                </main>
-            </Container>
+            <Header title="Cruz Store Analyzer" sections={sections} />
+            <Grid container spacing={3} alignItems="center">
+                <Grid item xs={8}>
+                    <TextField
+                        fullWidth
+                        type="file"
+                        onChange={handleFileChange}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpload}
+                        disabled={!fileInput}
+                    >
+                        Upload
+                    </Button>
+                </Grid>
+            </Grid>
+            <Grid container spacing={3} sx={{marginTop: "10px"}}>
+                <Grid item xs={6}>
+                    <Typography variant="h6">History</Typography>
+                    {historyFiles.map((file, index) => (
+                        <div key={index}>{file.name}</div>
+                    ))}
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant="h6">Current Files</Typography>
+                    {currentFiles.map((file, index) => (
+                        <div key={index}>{file.name}</div>
+                    ))}
+                </Grid>
+            </Grid>
             <Footer
                 title="Data Analysis | University of California, Santa Cruz"
                 description="description"
             />
         </Container>
     );
-}
+};

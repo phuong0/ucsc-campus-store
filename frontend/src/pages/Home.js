@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
 import ProjectDropdown from "../components/ProjectDropdown";
-import { Gif } from "@material-ui/icons";
 
 /*
 - homepage for data
@@ -23,6 +22,7 @@ const sections = [
 
 export default function Home() {
     const [projects, setProjects] = React.useState([]);
+    const [name, setName] = useState('');
 
     function parameterizeArray(key, value) {
         return '?' + key + '=' + value;
@@ -34,7 +34,12 @@ export default function Home() {
     }
 
     function createProject() {
-        // does nothing for now
+        var url = "/projects" + parameterizeArray('project', name);
+        window.location.href = url;
+    }
+
+    function handleChange(event) {
+        setName(event.target.value); // Update input value in state
     }
 
     function deleteProject() {
@@ -81,6 +86,8 @@ export default function Home() {
                                             id="project"
                                             label="Project name"
                                             name="project"
+                                            value={name} // Bind input value to state
+                                            onChange={handleChange} // Handle input change
                                         />
                                     </Grid>
                                     <Grid item>
@@ -141,7 +148,6 @@ export default function Home() {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            
                         </Grid>
                     </Container>
                 </main>
