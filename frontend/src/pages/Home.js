@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
 import ProjectDropdown from "../components/ProjectDropdown";
-import { Gif } from "@material-ui/icons";
 
 /*
 - homepage for data

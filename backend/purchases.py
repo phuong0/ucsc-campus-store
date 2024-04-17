@@ -1,8 +1,4 @@
 import pandas as pd
-df1 = pd.read_csv('UCSC Amazon purchase data Calendar 2023.csv')
-df2 = pd.read_excel('CruzBuyCY23 Tangible Goods.xlsx')
-
-specified_categories = ['Beauty', 'Office Product']
 
 def summary(categories, df):
     ret = {}
@@ -17,19 +13,16 @@ def summary(categories, df):
         elif 'Quantity' in column_name:
             quantity_column = column_name
 
-
     for column_name in df.columns:
         if 'Category' in column_name:
             categoriesNet = df.groupby(column_name)[price_column].sum()
-            totalCount = df[column_name].value_counts()#
+            totalCount = df[column_name].value_counts()
             quantitySold = df.groupby(column_name)[quantity_column].sum()
             for cat in categories:
                 x = {}
-                x[price_column] = categoriesNet[cat]
-                x["Number of Orders"] = totalCount[cat]#
-                x["Total Quantity Sold"] = quantitySold[cat]
-                x[f'{price_column} Average'] = format(categoriesNet[cat] / totalCount[cat], '.2f')
+                x[price_column] = float(categoriesNet.get(cat, 0))  # Convert to float
+                x["Number of Orders"] = int(totalCount.get(cat, 0))  # Convert to int
+                x["Total Quantity Sold"] = int(quantitySold.get(cat, 0))  # Convert to int
+                x[f'{price_column} Average'] = format(categoriesNet.get(cat, 0) / totalCount.get(cat, 1), '.2f')  # Convert to float
                 ret[cat] = x
     return ret
-
-print(summary(specified_categories, df1))
