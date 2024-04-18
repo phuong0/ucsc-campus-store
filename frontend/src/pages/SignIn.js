@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -37,12 +37,13 @@ function Copyright(props) {
     );
 }
 
-function SignIn() {
+function SignIn(props) {
 
     const [formData, setFormData] = useState({
         email: "",
         passcode: "",
     });
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -55,9 +56,16 @@ function SignIn() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(formData.email, formData.passcode);
-            // Check the loginResponse for success or error
-            console.log("Login Successful");
+            const userid = await login(formData.email, formData.passcode);
+            if(userid)
+            {
+                props.login(userid);
+                console.log("Login Successful");
+            }
+            else
+            {
+                console.error("Incorrect email or password.")
+            }
         } catch (error) {
             // Handle the error
             console.error("Login Error:", error);

@@ -7,7 +7,7 @@ import Link from '@mui/material/Link';
 // skeleton for the header with the title and navigation bar
 
 function Header(props) {
-    const { sections, title } = props;
+    const { sections, title, userid } = props;
 
     return (
         <React.Fragment>
@@ -21,7 +21,12 @@ function Header(props) {
                     sx={{ flex: 1 }}
                 >
                     {title}
-                </Typography>
+                    </Typography>
+                {userid && (
+                    <Typography variant="body2" color="inherit" align="right">
+                        User ID: {userid}
+                    </Typography>
+                )}
             </Toolbar>
             <Toolbar
                 component="nav"
@@ -53,6 +58,7 @@ Header.propTypes = {
         }),
     ).isRequired,
     title: PropTypes.string.isRequired,
+    userid: PropTypes.string,
 };
 
 export default Header;

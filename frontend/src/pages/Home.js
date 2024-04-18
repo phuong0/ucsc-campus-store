@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -23,6 +23,16 @@ const sections = [
 export default function Home() {
     const [projects, setProjects] = React.useState([]);
     const [name, setName] = useState('');
+    const [userid, setUserId] = useState(null);
+
+    useEffect(() => {
+        const storedUserId = sessionStorage.getItem('userid');
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+    }, []);
+
+    console.log(name);
 
     function parameterizeArray(key, value) {
         return '?' + key + '=' + value;
@@ -50,7 +60,7 @@ export default function Home() {
         <Container>
             <CssBaseline />
             <Container maxWidth="lg">
-                <Header title="Cruz Store Analyzer" sections={sections} />
+                <Header title="Cruz Store Analyzer" sections={sections}  userid={userid}/>
                 <main>
                     <Container container>
                         <Grid
