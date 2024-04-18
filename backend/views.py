@@ -63,7 +63,7 @@ def get_login(request):
 
         # Query the database to check if email and passcode exist in accountinfo table
         with connection.cursor() as cursor:
-            cursor.execute("SELECT COUNT(*) FROM accountinfo WHERE email = %s AND passcode = %s", [email, passcode])
+            cursor.execute("SELECT userid FROM accountinfo WHERE email = %s AND passcode = %s", [email, passcode])
             result = cursor.fetchone()
 
         # If no matching record found, return error
