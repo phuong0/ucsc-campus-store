@@ -9,6 +9,8 @@ import Link from '@mui/material/Link';
 function Header(props) {
     const { sections, title, userid } = props;
 
+    console.log("header userid: " + userid);
+
     return (
         <React.Fragment>
             <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>

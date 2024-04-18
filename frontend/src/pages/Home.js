@@ -32,7 +32,7 @@ export default function Home() {
         }
     }, []);
 
-    console.log(name);
+    console.log("home userid: " + userid);
 
     function parameterizeArray(key, value) {
         return '?' + key + '=' + value;
