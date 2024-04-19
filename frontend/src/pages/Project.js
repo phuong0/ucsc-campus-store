@@ -35,13 +35,14 @@ export default function Project() {
 
         // Call the loadfile function passing the file data
         console.log(event.target.files[0]);
-        loadfile(event.target.files[0]);
+        //loadfile(event.target.files[0]);
         setFileInput(event.target.files[0]);
     };
 
     const handleUpload = () => {
         if (fileInput) {
             // Update state based on current category
+            loadfile(fileInput);
             setCurrentFiles(prevFiles => {
                 const newFiles = [...prevFiles, fileInput];
                 console.log(newFiles);  // Log the updated files list
@@ -50,18 +51,6 @@ export default function Project() {
             setFileInput('');
         }
     };
-
-    function parameterizeArray(key, value) {
-        return '?' + key + '=' + value;
-    }
-
-    const handleFinishUpload = () => {
-        if (fileInput) {
-            // Allow user to go to the analysis page
-            var url = "/files" + parameterizeArray('files', currentFiles);
-            window.location.href = url;
-        }
-    }
 
     return (
         <Container>
@@ -82,14 +71,6 @@ export default function Project() {
                         disabled={!fileInput}
                     >
                         Upload
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleFinishUpload}
-                        disabled={!fileInput}
-                    >
-                        Done
                     </Button>
                 </Grid>
             </Grid>
