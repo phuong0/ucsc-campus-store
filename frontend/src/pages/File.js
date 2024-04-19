@@ -36,51 +36,69 @@ export default function File() {
                             direction="row"
                             justifyContent="center"
                             alignItems="center"
-                            spacing={2}
+                            spacing={10}
                         >
-                            <Typography variant="h5" color="inherit" paragraph>
-                                Categories
-                            </Typography>
                             <Grid
                                 item
                                 container
-                                spacing={6}
-                                direction="row"
+                                direction="column"
                                 justifyContent="center"
                                 alignItems="center"
-                            >
-                                <Grid item>
-                                    <CategoryDropdown categories={categories} setCategories={setCategories}/>
+                                xs="4">
+                                <Typography variant="h5" color="inherit" paragraph >
+                                    Categories
+                                </Typography>
+                                <Grid
+                                    item
+                                    container
+                                    spacing={3}
+                                    direction="row"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    style={{ marginTop: "-24px" }}
+                                >
+                                    <Grid item>
+                                        <CategoryDropdown categories={categories} setCategories={setCategories} />
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                            <Typography variant="h5" color="inherit" paragraph>
-                                Full Text Search
-                            </Typography>
                             <Grid
                                 item
                                 container
-                                spacing={6}
-                                direction="row"
+                                direction="column"
                                 justifyContent="center"
                                 alignItems="center"
+                                xs="4"
                             >
-                                <Grid item>
-                                    <TextField
-                                        margin="normal"
-                                        id="full-search"
-                                        label="Full Search"
-                                        name="full-search"
-                                        autoFocus
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{ mt: 3 }}
-                                    >
-                                        Search
-                                    </Button>
+                                <Typography variant="h5" color="inherit" paragraph>
+                                    Full Text Search
+                                </Typography>
+                                <Grid
+                                    item
+                                    container
+                                    direction="row"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    spacing={3}
+                                >
+                                    <Grid item>
+                                        <TextField
+                                            margin="normal"
+                                            id="full-search"
+                                            label="Full Search"
+                                            name="full-search"
+                                            autoFocus
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            sx={{ mt: 3 }}
+                                        >
+                                            Search
+                                        </Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>

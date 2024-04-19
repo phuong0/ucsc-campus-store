@@ -51,6 +51,18 @@ export default function Project() {
         }
     };
 
+    function parameterizeArray(key, value) {
+        return '?' + key + '=' + value;
+    }
+
+    const handleFinishUpload = () => {
+        if (fileInput) {
+            // Allow user to go to the analysis page
+            var url = "/files" + parameterizeArray('files', currentFiles);
+            window.location.href = url;
+        }
+    }
+
     return (
         <Container>
             <Header title="Cruz Store Analyzer" sections={sections} />
@@ -70,6 +82,14 @@ export default function Project() {
                         disabled={!fileInput}
                     >
                         Upload
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleFinishUpload}
+                        disabled={!fileInput}
+                    >
+                        Done
                     </Button>
                 </Grid>
             </Grid>
