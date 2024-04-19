@@ -34,6 +34,7 @@ export default function Project() {
         }
 
         // Call the loadfile function passing the file data
+        console.log(event.target.files[0]);
         loadfile(event.target.files[0]);
         setFileInput(event.target.files[0]);
     };
@@ -41,7 +42,11 @@ export default function Project() {
     const handleUpload = () => {
         if (fileInput) {
             // Update state based on current category
-            setCurrentFiles([...currentFiles, fileInput]);
+            setCurrentFiles(prevFiles => {
+                const newFiles = [...prevFiles, fileInput];
+                console.log(newFiles);  // Log the updated files list
+                return newFiles;
+            });
             setFileInput('');
         }
     };
