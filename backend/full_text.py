@@ -1,48 +1,49 @@
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv('UCSC Amazon purchase data Calendar 2023.csv')
-df2 = pd.read_excel('CruzBuyCY23 Tangible Goods.xlsx')
-
-files = [df, df2]
-# keyword given by the user
-specified_keywords = ['beauty', 'Beauty']
-
-def full_text(files, keywords):
+def full_text(df, keywords, file_name):
     ret = {}
     price_column = ''
+    quantity_column = ''
     y = 0
-    # loop through multiple files
-    for df in files:
-        summary = {}
-        # finding the total prices not individual prices
-        for column_name in df.columns:
-            if ('Price' in column_name and 'Unit' not in column_name) or 'Total' in column_name:
-                price_column = column_name
-                break
 
-        # make a string copy of df
-        str_df = df.astype(str)
+    summary = {}
+    for column_name in df.columns:
+        if price_column and quantity_column:
+            break
+        if 'Price' in column_name or 'Total' in column_name and not price_column:
+            price_column = column_name
+        elif 'Quantity' in column_name:
+            quantity_column = column_name
+        
+    # make a string copy of df
+    str_df = df.astype(str)
+    for keyword in keywords:
+        
+        # searching through the entire doc to find keyword and returning rows with keyword
+        mask = np.column_stack([str_df[col].str.contains(keyword, na=False) for col in str_df])
+        filtered_rows = str_df[mask.any(axis=1)]
+        # changing column type from str to float to sum values
 
-        for keyword in keywords:
-            # searching through the entire doc to find keyword and returning rows with keyword
-            mask = np.column_stack([str_df[col].str.contains(keyword, na=False) for col in str_df])
-            filtered_rows = str_df[mask.any(axis=1)]
+        filtered_rows[price_column] = filtered_rows[price_column].astype(float)
+        netPrice = filtered_rows[price_column].sum()
+        
+        filtered_rows[quantity_column] = filtered_rows[quantity_column].astype(float)
+        quant = filtered_rows[quantity_column].sum()
+        #print(quant)
 
-            # changing column type from str to float to sum values
-            filtered_rows[price_column] = filtered_rows[price_column].astype(float)
-            netPrice = filtered_rows[price_column].sum()
+    
+        # adding entries to the results
+        x = {}
+        x ['Quantity Sold'] = int(quant)
+        x[price_column] = netPrice
+        x["Number of Orders"] = len(filtered_rows)
+        x[f'{price_column} Average'] = format(netPrice / quant, '.2f')
 
-            # adding entries to the results
-            x = {}
-            x[price_column] = netPrice
-            x["Count"] = len(filtered_rows)
-            summary[keyword] = x
-        y += 1
-        ret[f"file{y}"] = summary
+        summary[keyword] = x
+    y += 1
+    ret[file_name] = summary
+
     return ret
 
 
-answer = (full_text(files, specified_keywords))
-for key, value in answer.items():
-    print(f"{key}: {value}")

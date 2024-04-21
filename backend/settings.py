@@ -90,6 +90,8 @@ DATABASES = {
         'HOST': 'campus-sorting-do-user-16055366-0.c.db.ondigitalocean.com', 
         'PORT': '25060',
     }
+# Host: localhost
+# Port: 3306
 }
 
 
