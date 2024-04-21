@@ -82,23 +82,32 @@ def get_login(request):
 def get_categories(request):
     if request.method == 'POST':
         try:
-            file = request.FILES['file']
+            files = request.FILES.getlist('files')  # Assuming 'files' is the key for the array of files
             
-            if file.name.endswith('.csv'):
-                df = pd.read_csv(file)
-            elif file.name.endswith('.xlsx'):
-                df = pd.read_excel(file)
-            else:
-                return JsonResponse({'error': 'Unsupported file format'}, status=400)
-            category_info = categories(df)
+            if not files:
+                return JsonResponse({'error': 'No files were provided'}, status=400)
+            
+            ret = []
 
-            return JsonResponse(category_info, status=200)
-        
+            for file in files:
+                if file.name.endswith('.csv'):
+                    df = pd.read_csv(file)
+                elif file.name.endswith('.xlsx'):
+                    df = pd.read_excel(file)
+                else:
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
+                
+                category_info = categories(df)
+                ret.append(category_info)
+            
+            return JsonResponse(ret, safe=False, status=200)  # Set safe=False to allow non-dictionary objects
+            
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
 
 @csrf_exempt 
 def get_summary(request):
