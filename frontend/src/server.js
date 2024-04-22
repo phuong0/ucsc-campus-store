@@ -63,4 +63,19 @@ export const createproject = async (projectname, userid) => {
     }
 };
 
+export const getproject = async (userid) => {
+    try {
+        const response = await axios.post(
+            "http://localhost:8000/get-project/",
+            {
+                userid: userid
+            });
+        console.log(response.data); 
+        return response.data.project;
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+}; 
+
+
 

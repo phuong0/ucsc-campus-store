@@ -7,6 +7,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 
+import {getproject} from "../server"
+
 // dropdown for the projects
 
 const ITEM_HEIGHT = 48;
@@ -21,7 +23,22 @@ const MenuProps = {
 };
 
 export default function ProjectDropdown(props) {
-    let names = ["Project A", "Project B"];
+    const [projectList, setProjectList] = React.useState([]); // State to store the list of projects
+
+    React.useEffect(() => {
+        // Fetch projects when the component mounts
+        fetchProjects();
+    }, []);
+
+    const fetchProjects = async () => {
+        try {
+            // Call the getproject function to fetch projects
+            const projects = await getproject(props.userid);
+            setProjectList(projects); // Set the fetched projects to state
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+        }
+    };
 
     const handleChange = (event) => {
         props.setProjects(event.target.value);
@@ -40,11 +57,11 @@ export default function ProjectDropdown(props) {
                     MenuProps={MenuProps}
                 >
 
-                    {names.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            <ListItemText primary={name} />
+                    {projectList.map((projectName) => (
+                        <MenuItem key={projectName} value={projectName}>
+                            <ListItemText primary={projectName} />
                         </MenuItem>
-                    ))}
+                    ))} 
                 </Select>
             </FormControl>
         </div>
