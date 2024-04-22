@@ -210,3 +210,22 @@ def create_project(request):
                 return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+    
+@csrf_exempt
+    
+def get_project(request):
+    userid = request.GET.get('userid')
+
+    if not all([userid]):
+        return JsonResponse({'error': 'All fields are required'}, status=400)
+    
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT projectname FROM projects WHERE userid = %s", [userid])
+        data = cursor.fetchall()
+
+    # Convert the fetched data to a list of dictionaries
+    keys = ['projectname']
+    data_list = [dict(zip(keys, row)) for row in data]
+
+    # Return the fetched data in JSON format
+    return JsonResponse(data_list, safe=False)

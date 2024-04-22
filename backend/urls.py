@@ -21,8 +21,8 @@ from backend.views import get_account
 from backend.views import get_login
 from backend.views import load_file
 from backend.views import get_categories
-from backend.views import get_summary
 from backend.views import create_project
+from backend.views import get_project
  
 urlpatterns = [
     path('admin/', admin.site.urls), 
@@ -31,9 +31,10 @@ urlpatterns = [
     path('get-login/', get_login, name='login'), 
     path('load-file/', load_file, name='load-file'),
     path('get-categories', get_categories, name='get_categories'),
-    path('get_summary', get_summary, name='get_summary'),
-    path('create-project/', create_project, name='create_project')
+    path('create-project/', create_project, name='create_project'),
+    path('get-project/', get_project, name='get_project')
 ]
 
 #from backend.views import get_categories
 #path('get-categories', get_categories, name='categories'),
+#path('get_summary', get_summary, name='get_summary'),
