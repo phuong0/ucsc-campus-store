@@ -67,15 +67,17 @@ def get_login(request):
             result = cursor.fetchone()
 
         # If no matching record found, return error
-        if result[0] == 0:
+        if not result:
             return JsonResponse({'error': 'Invalid email or passcode'}, status=401)
 
-        # If email and passcode exist, return success message
-        return JsonResponse({'message': 'Login successful'}, status=200)
+        # If email and passcode exist, return success message along with userid
+        userid = result[0]
+        return JsonResponse({'message': 'Login successful', 'userid': userid}, status=200)
 
     except Exception as e:
         # Handle exceptions, if any
         return JsonResponse({'error': str(e)}, status=500)
+
 
 @csrf_exempt
 
@@ -138,6 +140,29 @@ def load_file(request):
                 cursor.execute("INSERT INTO files (filedata) VALUES (%s)", [file_data.read()])
                 connection.commit()
                 return JsonResponse({'message': 'File uploaded successfully'}, status=201)
+            except Exception as e:
+                connection.rollback()
+                return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+    
+@csrf_exempt
+    
+def create_project(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        projectname = data.get('projectname')
+        userid = data.get('userid')
+
+        if not all([projectname, userid]):
+            return JsonResponse({'error': 'All fields are required'}, status=400)
+
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute("INSERT INTO projects (projectname, userid) VALUES (%s, %s)",
+                               [projectname, userid])
+                connection.commit()
+                return JsonResponse({'message': 'Project created successfully'}, status=201)
             except Exception as e:
                 connection.rollback()
                 return JsonResponse({'error': str(e)}, status=500)
