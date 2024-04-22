@@ -23,6 +23,7 @@ from backend.views import load_file
 from backend.views import get_categories
 from backend.views import create_project
 from backend.views import get_project
+from backend.views import full_text_search
  
 urlpatterns = [
     path('admin/', admin.site.urls), 
@@ -32,7 +33,8 @@ urlpatterns = [
     path('load-file/', load_file, name='load-file'),
     path('get-categories', get_categories, name='get_categories'),
     path('create-project/', create_project, name='create_project'),
-    path('get-project/', get_project, name='get_project')
+    path('get-project/', get_project, name='get_project'),
+    path('full_text_search', full_text_search, name='full_text_search')
 ]
 
 #from backend.views import get_categories
