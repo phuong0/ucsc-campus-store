@@ -59,6 +59,7 @@ function SignIn(props) {
             const userid = await login(formData.email, formData.passcode);
             if(userid)
             {
+                sessionStorage.setItem('userid', userid);
                 props.login(userid);
                 console.log("Login Successful");
             }
