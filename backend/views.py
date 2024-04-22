@@ -215,17 +215,17 @@ def create_project(request):
     
 def get_project(request):
     userid = request.GET.get('userid')
+    print(request.GET)
 
-    if not all([userid]):
-        return JsonResponse({'error': 'All fields are required'}, status=400)
+    if not userid:
+        return JsonResponse({'error': 'User ID is required'}, status=400)
     
     with connection.cursor() as cursor:
         cursor.execute("SELECT projectname FROM projects WHERE userid = %s", [userid])
         data = cursor.fetchall()
 
-    # Convert the fetched data to a list of dictionaries
-    keys = ['projectname']
-    data_list = [dict(zip(keys, row)) for row in data]
+    # Convert the fetched data to a list
+    projects = [row[0] for row in data]
 
     # Return the fetched data in JSON format
-    return JsonResponse(data_list, safe=False)
+    return JsonResponse(projects, safe=False)
