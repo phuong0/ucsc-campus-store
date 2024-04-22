@@ -9,6 +9,8 @@ import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
 import ProjectDropdown from "../components/ProjectDropdown";
 
+import {createproject} from "../server"
+
 /*
 - homepage for data
 */
@@ -23,7 +25,7 @@ const sections = [
 export default function Home() {
     const [projects, setProjects] = React.useState([]);
     const [name, setName] = useState('');
-    const [userid, setUserId] = useState(null);
+    const [userid, setUserId] = useState('');
 
     useEffect(() => {
         const storedUserId = sessionStorage.getItem('userid');
@@ -43,9 +45,21 @@ export default function Home() {
         window.location.href = url;
     }
 
-    function createProject() {
-        var url = "/projects" + parameterizeArray('project', name);
-        window.location.href = url;
+    async function createProject(projectname) {
+        try {
+        
+            if (!userid) {
+                console.error("User ID not found in session storage.");
+                return;
+            }
+            
+            await createproject(projectname, userid);
+            
+            var url = "/projects" + parameterizeArray('project', projectname);
+            window.location.href = url;
+        } catch (error) {
+            console.error("Error:", error); 
+        }
     }
 
     function handleChange(event) {
@@ -101,7 +115,7 @@ export default function Home() {
                                         />
                                     </Grid>
                                     <Grid item>
-                                        <Button variant="contained" onClick={() => createProject()}>Create</Button>
+                                    <Button variant="contained" onClick={() => createProject(name)}>Create</Button>
                                     </Grid>
                                 </Grid>
                             </Grid>

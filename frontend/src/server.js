@@ -51,3 +51,16 @@ export const loadfile = async (filedata) => {
 };
 
 
+export const createproject = async (projectname, userid) => {
+    try {
+        const response = await axios.post("http://localhost:8000/create-project/", {
+            projectname: projectname,
+            userid: userid
+        });
+        console.log(response.data); 
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+};
+
+
