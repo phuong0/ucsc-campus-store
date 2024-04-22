@@ -23,8 +23,6 @@ export const Switch = ({userid, login, logout}) => {
         setAuthenticated(false);
     };
 
-    console.log("switch userid: " + userid);
-
     return (
         <Router>
             <Routes>

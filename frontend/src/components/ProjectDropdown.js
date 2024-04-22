@@ -5,9 +5,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
 
 import {getproject} from "../server"
+import { ContactSupportOutlined } from '@material-ui/icons';
 
 // dropdown for the projects
 
@@ -57,7 +57,7 @@ export default function ProjectDropdown(props) {
                     MenuProps={MenuProps}
                 >
 
-                    {projectList.map((projectName) => (
+                    {projectList && projectList.map((projectName) => (
                         <MenuItem key={projectName} value={projectName}>
                             <ListItemText primary={projectName} />
                         </MenuItem>

@@ -34,8 +34,6 @@ export default function Home() {
         }
     }, []);
 
-    console.log("home userid: " + userid);
-
     function parameterizeArray(key, value) {
         return '?' + key + '=' + value;
     }
@@ -47,7 +45,6 @@ export default function Home() {
 
     async function createProject(projectname) {
         try {
-        
             sessionStorage.setItem('userid', userid);
             if (!userid) {
                 console.error("User ID not found in session storage.");
@@ -140,7 +137,7 @@ export default function Home() {
                                     spacing={3}
                                 >
                                     <Grid item>
-                                        <ProjectDropdown projects={projects} setProjects={setProjects} />
+                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid}/>
                                     </Grid>
                                     <Grid item>
                                         <Button variant="contained" onClick={() => deleteProject()}>Delete</Button>
@@ -166,7 +163,7 @@ export default function Home() {
                                     spacing={3}
                                 >
                                     <Grid item>
-                                        <ProjectDropdown projects={projects} setProjects={setProjects} />
+                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid} />
                                     </Grid>
                                     <Grid item>
                                         <Button variant="contained" onClick={() => goToProjects()}>Go</Button>
