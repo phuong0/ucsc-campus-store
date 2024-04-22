@@ -5,6 +5,7 @@ from django.db import connection
 from django.contrib.auth import authenticate
 from backend.categories import categories
 from backend.purchases import summary
+from backend.full_text import full_text
 import pandas as pd
 
 @csrf_exempt
@@ -84,47 +85,88 @@ def get_login(request):
 def get_categories(request):
     if request.method == 'POST':
         try:
-            file = request.FILES['file']
+            files = request.FILES.getlist('files')  # Assuming 'files' is the key for the array of files
             
-            if file.name.endswith('.csv'):
-                df = pd.read_csv(file)
-            elif file.name.endswith('.xlsx'):
-                df = pd.read_excel(file)
-            else:
-                return JsonResponse({'error': 'Unsupported file format'}, status=400)
-            category_info = categories(df)
+            if not files:
+                return JsonResponse({'error': 'No files were provided'}, status=400)
+            
+            ret = []
 
-            return JsonResponse(category_info, status=200)
-        
+            for file in files:
+                if file.name.endswith('.csv'):
+                    df = pd.read_csv(file)
+                elif file.name.endswith('.xlsx'):
+                    df = pd.read_excel(file)
+                else:
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
+                
+                category_info = categories(df)
+                ret.append(category_info)
+            
+            return JsonResponse(ret, safe=False, status=200)  # Set safe=False to allow non-dictionary objects
+            
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
 
-@csrf_exempt 
-def get_summary(request):
+
+@csrf_exempt
+
+def full_text_search(request):
     if request.method == 'POST':
         try:
-            file = request.FILES['file']
-            categories = request.POST.getlist('categories[]')  # Assuming categories are sent as an array
+            files = request.FILES.getlist('files')  # Assuming 'files' is the key for the array of files
+            categories = request.POST.getlist('categories[]')
             
-            if file.name.endswith('.csv'):
-                df = pd.read_csv(file)
-            elif file.name.endswith('.xlsx'):
-                df = pd.read_excel(file)
-            else:
-                return JsonResponse({'error': 'Unsupported file format'}, status=400)
+            if not files:
+                return JsonResponse({'error': 'No files were provided'}, status=400)
             
-            # Call the summary function
-            summary_info = summary(categories, df)
-            print(summary_info)
-            return JsonResponse(summary_info, status=200)
-        
+            ret = []
+
+            for file in files:
+                if file.name.endswith('.csv'):
+                    df = pd.read_csv(file)
+                elif file.name.endswith('.xlsx'):
+                    df = pd.read_excel(file)
+                else:
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
+                
+                full_text_info = full_text(df, categories, file.name)
+                ret.append(full_text_info)
+            
+            return JsonResponse(ret, safe=False, status=200)  # Set safe=False to allow non-dictionary objects
+            
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+    
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+#@csrf_exempt 
+#def get_summary(request):
+#    if request.method == 'POST':
+#        try:
+#            file = request.FILES['file']
+#            categories = request.POST.getlist('categories[]')  # Assuming categories are sent as an array
+#            
+#            if file.name.endswith('.csv'):
+#                df = pd.read_csv(file)
+#            elif file.name.endswith('.xlsx'):
+#                df = pd.read_excel(file)
+#            else:
+#                return JsonResponse({'error': 'Unsupported file format'}, status=400)
+#            
+#            # Call the summary function
+#            summary_info = summary(categories, df)
+#            print(summary_info)
+#            return JsonResponse(summary_info, status=200)
+#        
+#        except Exception as e:
+#            return JsonResponse({'error': str(e)}, status=500)
+#    else:
+#        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
     
 @csrf_exempt
     
