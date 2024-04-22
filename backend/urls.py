@@ -31,7 +31,7 @@ urlpatterns = [
     path('get-login/', get_login, name='login'), 
     path('load-file/', load_file, name='load-file'),
     path('get-categories', get_categories, name='get_categories'),
-    path('get_summary', get_summary, name='get_summary')
+    path('get_summary', get_summary, name='get_summary'),
     path('create-project/', create_project, name='create_project')
 ]
 
