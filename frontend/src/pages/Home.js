@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import ProjectDropdown from "../components/ProjectDropdown";
 
 import {createproject} from "../server"
+import {deleteproject} from "../server"
 
 /*
 - homepage for data
@@ -64,8 +65,19 @@ export default function Home() {
         setName(event.target.value); // Update input value in state
     }
 
-    function deleteProject() {
-        // does nothing for now
+    async function deleteProject(projectname) {
+        try {
+            sessionStorage.setItem('userid', userid);
+            if (!userid) {
+                console.error("User ID not found in session storage.");
+                return;
+            }
+            
+            await deleteproject(projectname, userid);
+            
+        } catch (error) {
+            console.error("Error:", error); 
+        }
     }
 
     return (
