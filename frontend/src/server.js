@@ -72,4 +72,16 @@ export const getproject = async (userid) => {
     } catch (error) {
         console.error("Error:", error); 
     }
-}; 
+};
+
+export const deleteproject = async (projectname, userid) => {
+    try {
+        const response = await axios.post("http://localhost:8000/delete-project/", {
+            projectname: projectname,
+            userid: userid
+        });
+        console.log(response.data); 
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+};
