@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from "react";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -23,7 +23,8 @@ const MenuProps = {
 };
 
 export default function ProjectDropdown(props) {
-    const [projectList, setProjectList] = React.useState([]); // State to store the list of projects
+    const [projectList, setProjectList] = React.useState([]); 
+    const [userid, setUserId] = useState('');// State to store the list of projects
 
     React.useEffect(() => {
         // Fetch projects when the component mounts
@@ -33,7 +34,8 @@ export default function ProjectDropdown(props) {
     const fetchProjects = async () => {
         try {
             // Call the getproject function to fetch projects
-            const projects = await getproject(props.userid);
+            const temp = sessionStorage.getItem('userid', userid);
+            const projects = await getproject(temp);
             setProjectList(projects); // Set the fetched projects to state
         } catch (error) {
             console.error("Error fetching projects:", error);
