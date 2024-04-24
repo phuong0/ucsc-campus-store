@@ -24,6 +24,7 @@ from backend.views import get_categories
 from backend.views import create_project
 from backend.views import get_project
 from backend.views import full_text_search
+from backend.views import delete_project
  
 urlpatterns = [
     path('admin/', admin.site.urls), 
@@ -34,7 +35,8 @@ urlpatterns = [
     path('get-categories', get_categories, name='get_categories'),
     path('create-project/', create_project, name='create_project'),
     path('get-project/', get_project, name='get_project'),
-    path('full_text_search', full_text_search, name='full_text_search')
+    path('full_text_search', full_text_search, name='full_text_search'),
+    path('delete-project/', delete_project, name='delete_project'),
 ]
 
 #from backend.views import get_categories

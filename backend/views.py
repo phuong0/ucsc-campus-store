@@ -229,3 +229,26 @@ def get_project(request):
 
     # Return the fetched data in JSON format
     return JsonResponse(projects, safe=False)
+
+@csrf_exempt
+
+def delete_project(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        projectname = data.get('projectname')
+        userid = data.get('userid')
+
+        if not all([projectname, userid]):
+            return JsonResponse({'error': 'All fields are required'}, status=400)
+
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute("DELETE FROM projects WHERE projectname = %s AND userid = %s",
+                               [projectname, userid])
+                connection.commit()
+                return JsonResponse({'message': 'Project deleted successfully'}, status=201)
+            except Exception as e:
+                connection.rollback()
+                return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
