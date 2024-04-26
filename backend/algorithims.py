@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 
-
-
 def categories(df):
     ret = {}
     for column_name in df.columns:
@@ -58,5 +56,16 @@ def full_text(df, keywords, file_name):
 
     return ret
 
+
+def filter_and_save(category_names, dataframes, output_file):
+    filtered_data = pd.DataFrame()
+    for df in dataframes:
+        for column_name in df.columns:
+            if 'Category' in column_name:
+                for category_name in category_names:
+                    filtered_rows = df[df[column_name].str.contains(category_name, na=False, case=False)]
+                    filtered_data = pd.concat([filtered_data, filtered_rows])
+
+    filtered_data.to_excel(output_file, index=False)
 
 

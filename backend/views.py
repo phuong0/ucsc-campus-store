@@ -1,11 +1,14 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db import connection
 from django.contrib.auth import authenticate
 from backend.algorithims import categories
 from backend.algorithims import full_text
+from backend.algorithims import filter_and_save
 import pandas as pd
+import os
+from django.http import FileResponse
 
 @csrf_exempt
 
@@ -228,3 +231,41 @@ def delete_project(request):
                 return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+
+
+
+@csrf_exempt
+def process_files(request):
+    if request.method == 'POST':
+        # Parse request data
+        files = request.FILES.getlist('files')
+        categories = request.POST.getlist('categories[]')  # Assuming categories are sent as a list in the request
+
+        # Process files
+        dataframes = []
+        for file in files:
+            # Determine file extension
+            file_extension = os.path.splitext(file.name)[1].lower()
+            
+            # Read file based on extension
+            if file_extension == '.xlsx':
+                df = pd.read_excel(file, engine='openpyxl')
+            elif file_extension == '.csv':
+                df = pd.read_csv(file)
+            else:
+                return JsonResponse({'error': f'Unsupported file format: {file_extension}'}, status=400)
+
+            dataframes.append(df)
+
+        output_file_path = 'output.xlsx'  # Define the path for the output file
+
+        # Call the filter_and_save function
+        filter_and_save(categories, dataframes, output_file_path)
+
+        # Return the output file to the frontend
+        return FileResponse(open(output_file_path, 'rb'), as_attachment=True, filename='output.xlsx')
+
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
