@@ -8,6 +8,12 @@ import Footer from "../components/Footer";
 import Typography from '@mui/material/Typography';
 import TextField from "@mui/material/TextField";
 import CategoryDropdown from "../components/CategoryDropdown";
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import category from "../assets/category.png";
+import fullsearch from "../assets/magnifying.png";
 
 /*
 - files page
@@ -17,6 +23,7 @@ import CategoryDropdown from "../components/CategoryDropdown";
 const originUrl = window.location.origin;
 
 const sections = [
+    { title: "Home", url: originUrl + "/home" },
     { title: "Change Password", url: originUrl + "/home" },
 ];
 
@@ -100,6 +107,60 @@ export default function File() {
                                         </Button>
                                     </Grid>
                                 </Grid>
+                            </Grid>
+                            <Grid
+                                item
+                                container
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
+                                xs="5">
+                                <Card sx={{ minWidth: 345 }}>
+                                    <CardMedia
+                                        component="img"
+                                        alt="category image"
+                                        height="155"
+                                        image={category}
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            Categories Results
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Results go here
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button size="small">Download</Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                            <Grid
+                                item
+                                container
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
+                                xs="5">
+                                <Card sx={{ minWidth: 345 }}>
+                                    <CardMedia
+                                        component="img"
+                                        alt="fulltext image"
+                                        height="155"
+                                        image={fullsearch}
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            Full Text Search Results
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Results go here
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button size="small">Download</Button>
+                                    </CardActions>
+                                </Card>
                             </Grid>
                         </Grid>
                     </Container>
