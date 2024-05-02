@@ -9,6 +9,8 @@ from backend.algorithims import filter_and_save
 import pandas as pd
 import os
 from django.http import FileResponse
+import io
+import magic
 
 @csrf_exempt
 
@@ -87,18 +89,24 @@ def get_login(request):
 def get_categories(request):
     if request.method == 'POST':
         try:
-            files = request.FILES.getlist('files')  # Assuming 'files' is the key for the array of files
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files")
+                files = cursor.fetchall()
+
             
             if not files:
                 return JsonResponse({'error': 'No files were provided'}, status=400)
             
             ret = []
 
-            for file in files:
-                if file.name.endswith('.csv'):
-                    df = pd.read_csv(file)
-                elif file.name.endswith('.xlsx'):
+            for file_data, in files:
+                file = io.BytesIO(file_data)
+                mime = magic.Magic(mime=True)
+                file_type = mime.from_buffer(file_data)
+                if 'sheet' in file_type:
                     df = pd.read_excel(file)
+                elif 'csv' in file_type:
+                    df = pd.read_csv(file)
                 else:
                     return JsonResponse({'error': 'Unsupported file format'}, status=400)
                 
