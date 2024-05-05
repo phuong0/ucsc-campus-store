@@ -15,6 +15,8 @@ import CardMedia from '@mui/material/CardMedia';
 import category from "../assets/category.png";
 import fullsearch from "../assets/magnifying.png";
 
+import {getcategories} from "../server"
+
 /*
 - files page
 */
@@ -30,6 +32,20 @@ const sections = [
 export default function File() {
     const [categories, setCategories] = React.useState([]);
     const [files, setFiles] = React.useState([]);
+
+    React.useEffect(() => {
+        sendReq();
+    }, []);
+
+    const sendReq = async () => {
+        
+        try {
+            const cat = await getcategories();
+            setCategories(cat)
+        } catch (error) {
+            console.error("Login Error:", error);
+        }
+    }
 
     return (
         <Container>

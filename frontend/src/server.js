@@ -85,3 +85,13 @@ export const deleteproject = async (projectname, userid) => {
         console.error("Error:", error); 
     }
 };
+
+export const getcategories = async () => {
+    try {
+        const response = await axios.post("http://localhost:8000/get-categories");
+        console.log(response.data); 
+        return response.data
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+}

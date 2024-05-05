@@ -21,10 +21,18 @@ const MenuProps = {
 };
 
 export default function CategoryDropdown(props) {
-    let names = ["Example", "Placeholder"];
+    const fetched = []
+    const [label, setLabel] = React.useState('')
+    for (const [key, value] of props.categories.entries()) {
+        for (const arrayValue of Object.values(value)) {
+            fetched.push(...arrayValue);
+        }
+      }
+    
+    
 
     const handleChange = (event) => {
-        props.setCategories(event.target.value);
+        setLabel(event.target.value);
     };
     
     return (
@@ -34,17 +42,23 @@ export default function CategoryDropdown(props) {
                 <Select
                     labelId="simple-select-autowidth-label"
                     id="simple-select-autowidth"
-                    value={props.categories}
+                    value={label}
                     onChange={handleChange}
                     input={<OutlinedInput label="Categories" />}
                     MenuProps={MenuProps}
                 >
 
-                    {names.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            <ListItemText primary={name} />
+                    {fetched.length === 0 ? (
+                        <MenuItem disabled>
+                            <ListItemText primary="Loading..." />
                         </MenuItem>
-                    ))}
+                    ) : (
+                        fetched.map((name) => (
+                            <MenuItem key={name} value={name}>
+                                <ListItemText primary={name} />
+                            </MenuItem>
+                        ))
+                    )}
                 </Select>
             </FormControl>
         </div>
