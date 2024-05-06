@@ -22,17 +22,15 @@ const MenuProps = {
 
 export default function CategoryDropdown(props) {
     const fetched = []
-    const [label, setLabel] = React.useState('')
     for (const [key, value] of props.categories.entries()) {
         for (const arrayValue of Object.values(value)) {
             fetched.push(...arrayValue);
         }
       }
     
-    
 
     const handleChange = (event) => {
-        setLabel(event.target.value);
+        props.setLabel(event.target.value)
     };
     
     return (
@@ -42,7 +40,7 @@ export default function CategoryDropdown(props) {
                 <Select
                     labelId="simple-select-autowidth-label"
                     id="simple-select-autowidth"
-                    value={label}
+                    value={props.label}
                     onChange={handleChange}
                     input={<OutlinedInput label="Categories" />}
                     MenuProps={MenuProps}

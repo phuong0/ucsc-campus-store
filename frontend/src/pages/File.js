@@ -15,7 +15,7 @@ import CardMedia from '@mui/material/CardMedia';
 import category from "../assets/category.png";
 import fullsearch from "../assets/magnifying.png";
 
-import {getcategories} from "../server"
+import {getcategories, categoryFile} from "../server"
 
 /*
 - files page
@@ -32,19 +32,49 @@ const sections = [
 export default function File() {
     const [categories, setCategories] = React.useState([]);
     const [files, setFiles] = React.useState([]);
+    const [label, setLabel] = React.useState('');
+    
 
     React.useEffect(() => {
         sendReq();
     }, []);
 
     const sendReq = async () => {
-        
         try {
             const cat = await getcategories();
             setCategories(cat)
+            
         } catch (error) {
             console.error("Login Error:", error);
         }
+    }
+
+    const downloadCategories = async () => {
+        
+        try {
+            const response = await categoryFile([label]);
+      
+            if (!response.ok) {
+              throw new Error('Failed to fetch');
+            }
+            console.log(response)
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'output.xlsx');
+            link.style.display = 'none';
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            console.log('done')
+          } catch (error) {
+            console.error("Login Error:", error);
+          }
     }
 
     return (
@@ -81,7 +111,7 @@ export default function File() {
                                     style={{ marginTop: "-24px" }}
                                 >
                                     <Grid item>
-                                        <CategoryDropdown categories={categories} setCategories={setCategories} />
+                                        <CategoryDropdown categories={categories} setCategories={setCategories} label={label} setLabel={setLabel}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -147,7 +177,7 @@ export default function File() {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="small">Download</Button>
+                                        <Button onClick={downloadCategories} size="small">Download</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
