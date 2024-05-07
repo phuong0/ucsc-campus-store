@@ -208,6 +208,33 @@ export default function File() {
                                     </CardActions>
                                 </Card>
                             </Grid>
+                            <Grid
+                                item
+                                container
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
+                                xs="5">
+                                <Card sx={{ minWidth: 345 }}>
+                                    <CardMedia
+                                        component="img"
+                                        alt="category image"
+                                        height="155"
+                                        image={category}
+                                    />
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            AI Search Results
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            Results go here
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button onClick={downloadCategories} size="small">Download</Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
                         </Grid>
                     </Container>
                 </main>
