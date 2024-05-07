@@ -11,11 +11,11 @@ def categories(df):
     return ret
 
 
-def full_text(df, keywords, file_name):
+def full_text(df, keywords, file_name, output_file):
     ret = {}
     price_column = ''
     quantity_column = ''
-    y = 0
+    rows = pd.DataFrame()
 
     summary = {}
     for column_name in df.columns:
@@ -33,15 +33,15 @@ def full_text(df, keywords, file_name):
         # searching through the entire doc to find keyword and returning rows with keyword
         mask = np.column_stack([str_df[col].str.contains(keyword, na=False) for col in str_df])
         filtered_rows = str_df[mask.any(axis=1)]
-        # changing column type from str to float to sum values
+        new_row = pd.DataFrame(filtered_rows)
+        rows = pd.concat([rows, new_row])
 
+        # changing column type from str to float to sum values
         filtered_rows[price_column] = filtered_rows[price_column].astype(float)
         netPrice = filtered_rows[price_column].sum()
         
         filtered_rows[quantity_column] = filtered_rows[quantity_column].astype(float)
         quant = filtered_rows[quantity_column].sum()
-        #print(quant)
-
     
         # adding entries to the results
         x = {}
@@ -51,9 +51,12 @@ def full_text(df, keywords, file_name):
         x[f'{price_column} Average'] = format(netPrice / quant, '.2f')
 
         summary[keyword] = x
-    y += 1
     ret[file_name] = summary
 
+    summaries = pd.DataFrame(ret)
+    rows = pd.concat([rows, summaries])
+    rows.to_excel(output_file, index=False)
+    
     return ret
 
 def similarity(keyword, words, model):
@@ -121,5 +124,4 @@ def filter_and_save(category_names, dataframes, output_file):
                     filtered_data = pd.concat([filtered_data, filtered_rows])
 
     filtered_data.to_excel(output_file, index=False)
-
 
