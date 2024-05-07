@@ -313,7 +313,9 @@ def process_files(request):
                 
                 dataframes.append(df)
             output_file_path = 'output.xlsx'
-            categories = request.POST.getlist('categories[]')
+            data = json.loads(request.body.decode('utf-8'))
+            categories = data.get('categories', [])
+            print(categories)
             filter_and_save(categories, dataframes, output_file_path)
             return FileResponse(open(output_file_path, 'rb'), as_attachment=True, filename='output.xlsx')
                         
