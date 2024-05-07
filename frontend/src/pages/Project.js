@@ -15,6 +15,7 @@ import { loadfile } from "../server";
 const originUrl = window.location.origin;
 
 const sections = [
+    { title: "Home", url: originUrl + "/home" },
     { title: "Change Password", url: originUrl + "/home" },
 ];
 
@@ -23,6 +24,10 @@ export default function Project() {
     const [historyFiles, setHistoryFiles] = useState([]);
     const [currentFiles, setCurrentFiles] = useState([]);
     const [fileInput, setFileInput] = useState('');
+
+    function parameterizeArray(key, value) {
+        return '?' + key + '=' + value;
+    }
 
     const handleFileChange = (event) => {
         let file_type = event.target.files[0].type;
@@ -51,6 +56,11 @@ export default function Project() {
         }
     };
 
+    const handleDone = () => {
+        var url = "/files" + parameterizeArray('files', currentFiles);
+        window.location.href = url;
+    }
+
     return (
         <Container>
             <Header title="Cruz Store Analyzer" sections={sections} />
@@ -70,6 +80,14 @@ export default function Project() {
                         disabled={!fileInput}
                     >
                         Upload
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleDone}
+                        sx={{ marginLeft:"10px" }}
+                    >
+                        Done
                     </Button>
                 </Grid>
             </Grid>

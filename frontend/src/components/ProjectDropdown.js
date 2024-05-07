@@ -7,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 
 import {getproject} from "../server"
-import { ContactSupportOutlined } from '@material-ui/icons';
+// import { ContactSupportOutlined } from '@material-ui/icons';
 
 // dropdown for the projects
 

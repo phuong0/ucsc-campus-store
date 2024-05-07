@@ -85,3 +85,36 @@ export const deleteproject = async (projectname, userid) => {
         console.error("Error:", error); 
     }
 };
+
+export const getcategories = async () => {
+    try {
+        const response = await axios.post("http://localhost:8000/get-categories");
+        // console.log(response.data); 
+        return response.data
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+}
+
+export const categoryFile = async (cats) => {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/process_files', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            categories: cats
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
