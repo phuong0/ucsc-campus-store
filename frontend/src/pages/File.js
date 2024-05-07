@@ -172,7 +172,7 @@ export default function File() {
                                         <Typography gutterBottom variant="h5" component="div">
                                             Categories Results
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" color="text.secondary" id="catergory">
                                             Results go here
                                         </Typography>
                                     </CardContent>
@@ -199,7 +199,7 @@ export default function File() {
                                         <Typography gutterBottom variant="h5" component="div">
                                             Full Text Search Results
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" color="text.secondary" id="full_text">
                                             Results go here
                                         </Typography>
                                     </CardContent>
@@ -226,7 +226,7 @@ export default function File() {
                                         <Typography gutterBottom variant="h5" component="div">
                                             AI Search Results
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="body2" color="text.secondary" id="ai">
                                             Results go here
                                         </Typography>
                                     </CardContent>
