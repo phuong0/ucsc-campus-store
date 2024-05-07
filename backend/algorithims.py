@@ -56,6 +56,60 @@ def full_text(df, keywords, file_name):
 
     return ret
 
+def similarity(keyword, words, model):
+    # Compute maximum similarity for keyword against all words in the entry
+    max_sim = 0
+    if keyword in model.wv.key_to_index:
+        for word in words:
+            if word in model.wv.key_to_index:
+                max_sim = max(max_sim, model.wv.similarity(keyword, word))
+    print(max_sim)
+    return max_sim
+
+def word2vec(df, keywords, model):
+    summary = {}
+    price_column = ''
+    quantity_column = ''
+    
+    # Identify specific columns
+    for column_name in df.columns:
+        if 'Price' in column_name or 'Total' in column_name and not price_column:
+            price_column = column_name
+        elif 'Quantity' in column_name and not quantity_column:
+            quantity_column = column_name
+        if price_column and quantity_column:
+            break
+    
+    # Convert DataFrame to string
+    str_df = df.astype(str)
+    for keyword in keywords:
+        matched_indices = []
+        for col in str_df:
+            for index, entry in str_df[col].iteritems():
+                words = entry.lower().split()
+                if similarity(keyword, words, model) > 0.8:
+                    matched_indices.append(index)
+        
+        # Aggregate matched data
+        matched_rows = df.loc[set(matched_indices)]
+        matched_rows[price_column] = matched_rows[price_column].astype(float)
+        matched_rows[quantity_column] = matched_rows[quantity_column].astype(float)
+
+        netPrice = matched_rows[price_column].sum()
+        quant = matched_rows[quantity_column].sum()
+
+        # Store results
+        summary[keyword] = {
+            'Quantity Sold': int(quant),
+            price_column: netPrice,
+            "Number of Orders": len(matched_rows),
+            f'{price_column} Average': format(netPrice / quant, '.2f') if quant else '0.00'
+        }
+    
+    return summary
+            
+        
+    
 
 def filter_and_save(category_names, dataframes, output_file):
     filtered_data = pd.DataFrame()

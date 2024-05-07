@@ -26,6 +26,7 @@ from backend.views import get_project
 from backend.views import full_text_search
 from backend.views import delete_project
 from backend.views import process_files
+from backend.views import word2vec_search
  
 urlpatterns = [
     path('admin/', admin.site.urls), 
@@ -39,6 +40,7 @@ urlpatterns = [
     path('full_text_search', full_text_search, name='full_text_search'),
     path('delete-project/', delete_project, name='delete_project'),
     path('process_files', process_files, name='process_files'),
+    path('word2vec_search', word2vec_search, name='word2vec_search')
 ]
 
 #from backend.views import get_categories
