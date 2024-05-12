@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-#import gensim
+import gensim
 from gensim.models import Word2Vec
 import json
 from django.db import connection
@@ -13,8 +13,9 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 import pandas as pd
 import os
 from django.http import FileResponse
-import io
-import magic
+
+model_path = './GoogleNews-vectors-negative300.bin'
+model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
 
 @csrf_exempt
 
@@ -93,24 +94,18 @@ def get_login(request):
 def get_categories(request):
     if request.method == 'POST':
         try:
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT filedata FROM files")
-                files = cursor.fetchall()
-
+            files = request.FILES.getlist('files')  # Assuming 'files' is the key for the array of files
             
             if not files:
                 return JsonResponse({'error': 'No files were provided'}, status=400)
             
             ret = []
 
-            for file_data, in files:
-                file = io.BytesIO(file_data)
-                mime = magic.Magic(mime=True)
-                file_type = mime.from_buffer(file_data)
-                if 'sheet' in file_type:
-                    df = pd.read_excel(file)
-                elif 'csv' in file_type:
+            for file in files:
+                if file.name.endswith('.csv'):
                     df = pd.read_csv(file)
+                elif file.name.endswith('.xlsx'):
+                    df = pd.read_excel(file)
                 else:
                     return JsonResponse({'error': 'Unsupported file format'}, status=400)
                 
@@ -178,15 +173,7 @@ def word2vec_search(request):
                     df = pd.read_excel(file)
                 else:
                     return JsonResponse({'error': 'Unsupported file format'}, status=400)
-                all_text_data = df.apply(lambda x: ' '.join(x.dropna().astype(str)), axis=1)
-                data = []
-                for row_text in all_text_data:
-                    for sentence in sent_tokenize(row_text):
-                        words = sentence.lower().split()
-                        data.append(words)
-                for keyword in categories: 
-                    data.append([keyword])
-                model = Word2Vec(data, min_count=1, vector_size=100, window=5)
+                
                 word2vec_info = word2vec(df, categories, model)
                 ret.append(word2vec_info)
             
@@ -289,38 +276,34 @@ def delete_project(request):
 @csrf_exempt
 def process_files(request):
     if request.method == 'POST':
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT filedata FROM files")
-                files = cursor.fetchall()
+        # Parse request data
+        files = request.FILES.getlist('files')
+        categories = request.POST.getlist('categories[]')  # Assuming categories are sent as a list in the request
 
+        # Process files
+        dataframes = []
+        for file in files:
+            # Determine file extension
+            file_extension = os.path.splitext(file.name)[1].lower()
             
-            if not files:
-                return JsonResponse({'error': 'No files were provided'}, status=400)
-            
-            dataframes = []
+            # Read file based on extension
+            if file_extension == '.xlsx':
+                df = pd.read_excel(file, engine='openpyxl')
+            elif file_extension == '.csv':
+                df = pd.read_csv(file)
+            else:
+                return JsonResponse({'error': f'Unsupported file format: {file_extension}'}, status=400)
 
-            for file_data, in files:
-                file = io.BytesIO(file_data)
-                mime = magic.Magic(mime=True)
-                file_type = mime.from_buffer(file_data)
-                if 'sheet' in file_type:
-                    df = pd.read_excel(file)
-                elif 'csv' in file_type:
-                    df = pd.read_csv(file)
-                else:
-                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
-                
-                dataframes.append(df)
-            output_file_path = 'output.xlsx'
-            data = json.loads(request.body.decode('utf-8'))
-            categories = data.get('categories', [])
-            print(categories)
-            filter_and_save(categories, dataframes, output_file_path)
-            return FileResponse(open(output_file_path, 'rb'), as_attachment=True, filename='output.xlsx')
-                        
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            dataframes.append(df)
+
+        output_file_path = 'output.xlsx'  # Define the path for the output file
+
+        # Call the filter_and_save function
+        filter_and_save(categories, dataframes, output_file_path)
+
+        # Return the output file to the frontend
+        return FileResponse(open(output_file_path, 'rb'), as_attachment=True, filename='output.xlsx')
 
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+

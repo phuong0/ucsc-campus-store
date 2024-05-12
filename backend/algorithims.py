@@ -62,10 +62,10 @@ def full_text(df, keywords, file_name, output_file):
 def similarity(keyword, words, model):
     # Compute maximum similarity for keyword against all words in the entry
     max_sim = 0
-    if keyword in model.wv.key_to_index:
+    if keyword in model.key_to_index:
         for word in words:
-            if word in model.wv.key_to_index:
-                max_sim = max(max_sim, model.wv.similarity(keyword, word))
+            if word in model.key_to_index:
+                max_sim = max(max_sim, model.similarity(keyword, word))
     print(max_sim)
     return max_sim
 
