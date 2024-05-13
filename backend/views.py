@@ -133,26 +133,33 @@ def get_categories(request):
 def full_text_search(request):
     if request.method == 'POST':
         try:
-            files = request.FILES.getlist('files')  # Assuming 'files' is the key for the array of files
-            categories = request.POST.getlist('categories[]')
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files")
+                files = cursor.fetchall()
+
             
             if not files:
                 return JsonResponse({'error': 'No files were provided'}, status=400)
-            
-            ret = []
 
-            for file in files:
-                if file.name.endswith('.csv'):
-                    df = pd.read_csv(file)
-                elif file.name.endswith('.xlsx'):
+            dfs = []
+            for file_data, in files:
+                file = io.BytesIO(file_data)
+                mime = magic.Magic(mime=True)
+                file_type = mime.from_buffer(file_data)
+                if 'sheet' in file_type:
                     df = pd.read_excel(file)
+                    dfs.append(df)
+                elif 'csv' in file_type:
+                    df = pd.read_csv(file)
+                    dfs.append(df)
                 else:
                     return JsonResponse({'error': 'Unsupported file format'}, status=400)
-                
-                full_text_info = full_text(df, categories, file.name)
-                ret.append(full_text_info)
             
-            return JsonResponse(ret, safe=False, status=200)  # Set safe=False to allow non-dictionary objects
+            output_file_path = 'full-text.xlsx'
+            data = json.loads(request.body.decode('utf-8'))
+            keywords = data.get('keywords', [])
+            full_text(dfs, keywords, output_file_path)
+            return FileResponse(open(output_file_path, 'rb'), as_attachment=True, filename='full-text.xlsx')
             
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
