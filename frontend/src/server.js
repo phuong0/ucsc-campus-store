@@ -118,3 +118,27 @@ export const categoryFile = async (cats) => {
         throw error;
     }
 }
+
+
+export const fullTextFile = async (keywords) => {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/full_text_search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            keywords: keywords
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
