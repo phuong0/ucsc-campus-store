@@ -15,7 +15,7 @@ import CardMedia from '@mui/material/CardMedia';
 import category from "../assets/category.png";
 import fullsearch from "../assets/magnifying.png";
 
-import {getcategories, categoryFile} from "../server"
+import {getcategories, categoryFile, fullTextFile} from "../server"
 
 /*
 - files page
@@ -33,11 +33,20 @@ export default function File() {
     const [categories, setCategories] = React.useState([]);
     const [files, setFiles] = React.useState([]);
     const [label, setLabel] = React.useState('');
+    const [keywords, setKeywords] = React.useState('');
+
+    console.log(keywords)
+
+
     
 
     React.useEffect(() => {
         sendReq();
     }, []);
+
+    const handleKeywords = (event) => {
+        setKeywords(event.target.value)
+    }
 
     const sendReq = async () => {
         try {
@@ -47,6 +56,43 @@ export default function File() {
         } catch (error) {
             console.error("Login Error:", error);
         }
+    }
+
+    const handleFullTextDownload = async () => {
+        
+        try {
+            const regex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
+            if (regex.test(keywords)) {
+                console.log("String matches the pattern");
+            }
+            else {
+                window.alert('Full Text must be comma seperated with spaces \n Example: Keyword1, Keyword2, Keyword3')
+                throw new Error('Badly Formed String');
+            }
+            const keys = keywords.split(", ")
+            const response = await fullTextFile(keys);
+      
+            if (!response.ok) {
+              throw new Error('Failed to fetch');
+            }
+            console.log(response)
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'full_text.xlsx');
+            link.style.display = 'none';
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            console.log('done')
+          } catch (error) {
+            console.error("Login Error:", error);
+          }
     }
 
     const downloadCategories = async () => {
@@ -141,6 +187,7 @@ export default function File() {
                                             label="Full Search"
                                             name="full-search"
                                             autoFocus
+                                            onChange={handleKeywords}
                                         />
                                     </Grid>
                                     <Grid item>
@@ -204,7 +251,7 @@ export default function File() {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button size="small">Download</Button>
+                                        <Button onClick={handleFullTextDownload} size="small">Download</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
