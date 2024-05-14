@@ -57,7 +57,7 @@ def full_text(files, keywords, output_file):
         ret[f"file{y}"] = summary
 
     summaries = pd.DataFrame(ret)
-    rows = pd.concat([rows, summaries])
+    rows = pd.concat([summaries, rows])
     rows.to_excel(output_file, index=False)
     
     return ret
@@ -127,4 +127,4 @@ def filter_and_save(category_names, dataframes, output_file):
                     filtered_data = pd.concat([filtered_data, filtered_rows])
 
     filtered_data.to_excel(output_file, index=False)
-
+    
