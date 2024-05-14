@@ -61,6 +61,14 @@ export default function File() {
     const handleFullTextDownload = async () => {
         
         try {
+            const regex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
+            if (regex.test(keywords)) {
+                console.log("String matches the pattern");
+            }
+            else {
+                window.alert('Full Text must be comma seperated with spaces \n Example: Keyword1, Keyword2, Keyword3')
+                throw new Error('Badly Formed String');
+            }
             const keys = keywords.split(", ")
             const response = await fullTextFile(keys);
       
