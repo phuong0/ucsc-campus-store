@@ -81,7 +81,7 @@ export default function File() {
 
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'full_text.xlsx');
+            link.setAttribute('download', 'Full Text.xlsx');
             link.style.display = 'none';
             document.body.appendChild(link);
 
@@ -109,7 +109,7 @@ export default function File() {
 
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'output.xlsx');
+            link.setAttribute('download', `${label}.xlsx`);
             link.style.display = 'none';
             document.body.appendChild(link);
 
