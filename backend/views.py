@@ -7,6 +7,7 @@ from django.db import connection
 from django.contrib.auth import authenticate
 from backend.algorithims import categories
 from backend.algorithims import full_text
+from backend.algorithims import full_textSummary
 from backend.algorithims import word2vec
 from backend.algorithims import filter_and_save
 from nltk.tokenize import sent_tokenize, word_tokenize
@@ -126,6 +127,45 @@ def get_categories(request):
     
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+@csrf_exempt
+
+def full_text_summary(request):
+    if request.method == 'POST':
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files")
+                files = cursor.fetchall()
+
+            
+            if not files:
+                return JsonResponse({'error': 'No files were provided'}, status=400)
+
+            dfs = []
+            for file_data, in files:
+                file = io.BytesIO(file_data)
+                mime = magic.Magic(mime=True)
+                file_type = mime.from_buffer(file_data)
+                if 'sheet' in file_type:
+                    df = pd.read_excel(file)
+                    dfs.append(df)
+                elif 'csv' in file_type:
+                    df = pd.read_csv(file)
+                    dfs.append(df)
+                else:
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
+            
+            data = json.loads(request.body.decode('utf-8'))
+            keywords = data.get('keywords', [])
+            summary = full_textSummary(dfs, keywords)
+            return JsonResponse(summary, safe=False, status=200)
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
 
 
 @csrf_exempt
