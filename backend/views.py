@@ -15,7 +15,7 @@ import pandas as pd
 import os
 from django.http import FileResponse
 import io
-import magic
+import filetype
 
 #model_path = './GoogleNews-vectors-negative300.bin'
 #model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
@@ -105,17 +105,19 @@ def get_categories(request):
                 return JsonResponse({'error': 'No files were provided'}, status=400)
             
             ret = []
-
+            print("loop")
             for file_data, in files:
                 file = io.BytesIO(file_data)
-                mime = magic.Magic(mime=True)
-                file_type = mime.from_buffer(file_data)
-                if 'sheet' in file_type:
-                    df = pd.read_excel(file)
-                elif 'csv' in file_type:
+                print(file)
+                print("file")
+                kind = filetype.guess(file_data)
+
+                if kind == None:
                     df = pd.read_csv(file)
-                else:
-                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
+                elif 'sheet' in kind.mime:
+                    print("sheet")
+                    df = pd.read_excel(file)
+                
                 
                 category_info = categories(df)
                 ret.append(category_info)
