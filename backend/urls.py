@@ -27,6 +27,7 @@ from backend.views import full_text_search
 from backend.views import delete_project
 from backend.views import process_files
 from backend.views import full_text_summary
+from backend.views import store_projectid
 #from backend.views import word2vec_search
  
 urlpatterns = [
@@ -41,7 +42,8 @@ urlpatterns = [
     path('full_text_summary', full_text_summary, name='full_text_summary'),
     path('full_text_search', full_text_search, name='full_text_search'),
     path('delete-project/', delete_project, name='delete_project'),
-    path('process_files', process_files, name='process_files')
+    path('process_files', process_files, name='process_files'),
+    path('store-projectid/', store_projectid, name='store_projectid')
    #path('word2vec_search', word2vec_search, name='word2vec_search')
 ]
 

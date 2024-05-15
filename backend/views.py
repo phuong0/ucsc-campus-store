@@ -16,9 +16,15 @@ import os
 from django.http import FileResponse
 import io
 import filetype
+import random
 
 #model_path = './GoogleNews-vectors-negative300.bin'
 #model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
+
+
+
+def generate_random_project_id():
+    return str(random.randint(1000, 9999))
 
 @csrf_exempt
 
@@ -248,15 +254,24 @@ def full_text_search(request):
     
 def load_file(request):
     if request.method == 'POST':
-        file_data = request.FILES.get('filedata')  
-
+        projectid = request.POST.get('projectid')  
+        userid = request.POST.get('userid')
+        file_data = request.FILES.get('filedata') 
+     
         if not file_data:
             return JsonResponse({'error': 'No file provided'}, status=400)
+        if not projectid or not userid:
+            return JsonResponse({'error': 'Project ID and User ID are required'}, status=400)
 
         with connection.cursor() as cursor:
             try:
-                cursor.execute("INSERT INTO files (filedata) VALUES (%s)", [file_data.read()])
+                # Read file data
+                file_content = file_data.read()
+
+                # Insert file data into the database
+                cursor.execute("INSERT INTO files (projectid, userid, filedata) VALUES (%s, %s, %s)", [projectid, userid, file_content])
                 connection.commit()
+
                 return JsonResponse({'message': 'File uploaded successfully'}, status=201)
             except Exception as e:
                 connection.rollback()
@@ -274,11 +289,13 @@ def create_project(request):
 
         if not all([projectname, userid]):
             return JsonResponse({'error': 'All fields are required'}, status=400)
+        
+        projectid = generate_random_project_id()
 
         with connection.cursor() as cursor:
             try:
-                cursor.execute("INSERT INTO projects (projectname, userid) VALUES (%s, %s)",
-                               [projectname, userid])
+                cursor.execute("INSERT INTO projects (projectid, projectname, userid) VALUES (%s, %s, %s)",
+                               [projectid, projectname, userid])
                 connection.commit()
                 return JsonResponse({'message': 'Project created successfully'}, status=201)
             except Exception as e:
@@ -369,3 +386,20 @@ def process_files(request):
 
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+
+def store_projectid(request):
+    data = json.loads(request.body)
+    projectname = data.get('projectname')
+    userid = data.get('userid')
+
+    if not userid:
+        return JsonResponse({'error': 'User ID is required'}, status=400)
+    
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT projectid FROM projects WHERE projectname = %s AND userid = %s", [projectname, userid])
+        projectid = cursor.fetchone()
+
+    # Return the fetched projectid in JSON format
+    return JsonResponse({'projectid': projectid}, safe=False)
