@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import Typography from '@mui/material/Typography';
 import TextField from "@mui/material/TextField";
 import { loadfile } from "../server";
+import { setprojectid } from "../server";
 
 /*
 - project page
@@ -25,10 +26,19 @@ export default function Project() {
     const [currentFiles, setCurrentFiles] = useState([]);
     const [fileInput, setFileInput] = useState('');
     const [projectname, setProjectName] = useState('');
+    const [userid, setUserid] = useState('');
+    const [projectid, setProjectId] = useState(null);
+
 
     useEffect(() => {
         const temp = sessionStorage.getItem('projectname');
+        const temp1 = sessionStorage.getItem('userid')
         setProjectName(temp);
+        setUserid(temp1)
+
+        setprojectid(temp, temp1).then(projectid => {
+            setProjectId(projectid); 
+        });
     }, []);
 
     function parameterizeArray(key, value) {
@@ -52,7 +62,7 @@ export default function Project() {
     const handleUpload = () => {
         if (fileInput) {
             // Update state based on current category
-            loadfile(fileInput);
+            loadfile(projectid, userid, fileInput);
             setCurrentFiles(prevFiles => {
                 const newFiles = [...prevFiles, fileInput];
                 console.log(newFiles);  // Log the updated files list
@@ -69,7 +79,7 @@ export default function Project() {
 
     return (
         <Container>
-            <Header title={projectname ? `Project: ${projectname}` : "Cruz Store Analyzer"} sections={sections} />
+            <Header title={projectname ? `Project: ${projectname}` : "Cruz Store Analyzer"} sections={sections} userid={userid}/>
             <Grid container spacing={3} alignItems="center">
                 <Grid item xs={8}>
                     <TextField

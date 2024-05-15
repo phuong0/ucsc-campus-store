@@ -30,10 +30,12 @@ export const login = async (email, passcode) => {
     }
 }; 
 
-export const loadfile = async (filedata) => {
+export const loadfile = async (projectid, userid, filedata) => {
     try {
         const formData = new FormData();
-        formData.append('filedata', filedata); 
+        formData.append('projectid', projectid);
+        formData.append('userid', userid);
+        formData.append('filedata', filedata);
 
         const response = await axios.post(
             "http://localhost:8000/load-file/",
@@ -142,3 +144,18 @@ export const fullTextFile = async (keywords) => {
         throw error;
     }
 }
+
+export const setprojectid = async (userid, projectname) => {
+    try {
+        const response = await axios.post(
+            "http://localhost:8000/store-projectid/",
+            {
+                userid: userid,
+                projectname: projectname
+            });
+        console.log(response.data); 
+        return response.data.projectid;
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+}; 
