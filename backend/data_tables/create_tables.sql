@@ -7,7 +7,8 @@
  );
 
  CREATE TABLE projects(
-    projectid INT AUTO_INCREMENT PRIMARY KEY, 
+    projectid INT AUTO_INCREMENT PRIMARY KEY,
+    projectname VARCHAR(100) NOT NULL
     userid INT NOT NULL, 
     sortedID INT NOT NULL,
     sorted LONGBLOB NOT NULL,
@@ -17,6 +18,17 @@
  CREATE TABLE files(
     fileid INT AUTO_INCREMENT PRIMARY KEY,
     projectid INT NOT NULL,
+    userid INT NOT NULL,
     filedata LONGBLOB NOT NULL,
-    FOREIGN KEY (projectid) REFERENCES projects(projectid)
+    FOREIGN KEY (projectid) REFERENCES projects(projectid),
+    FOREIGN KEY (userid) REFERENCES accountinfo(userid)
+ );
+
+  CREATE TABLE sorted(
+    sortedid INT AUTO_INCREMENT PRIMARY KEY,
+    projectid INT NOT NULL,
+    userid INT NOT NULL,
+    filedata LONGBLOB NOT NULL,
+    FOREIGN KEY (projectid) REFERENCES projects(projectid),
+    FOREIGN KEY (userid) REFERENCES accountinfo(userid)
  );

@@ -105,8 +105,9 @@ def get_categories(request):
                 return JsonResponse({'error': 'No files were provided'}, status=400)
             
             ret = []
-            print("loop")
+            print("Starting For Loop")
             for file_data, in files:
+                print("Uses Io")
                 file = io.BytesIO(file_data)
                 print(file)
                 print("file")
@@ -115,13 +116,15 @@ def get_categories(request):
                 if kind == None:
                     df = pd.read_csv(file)
                 elif 'sheet' in kind.mime:
-                    print("sheet")
+                    print("Sheet")
                     df = pd.read_excel(file)
-                
+                else:
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
                 
                 category_info = categories(df)
                 ret.append(category_info)
-            
+
+            print("Finished For Loop")
             return JsonResponse(ret, safe=False, status=200)  # Set safe=False to allow non-dictionary objects
             
         except Exception as e:
