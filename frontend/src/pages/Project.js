@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -24,6 +24,12 @@ export default function Project() {
     const [historyFiles, setHistoryFiles] = useState([]);
     const [currentFiles, setCurrentFiles] = useState([]);
     const [fileInput, setFileInput] = useState('');
+    const [projectname, setProjectName] = useState('');
+
+    useEffect(() => {
+        const temp = sessionStorage.getItem('projectname');
+        setProjectName(temp);
+    }, []);
 
     function parameterizeArray(key, value) {
         return '?' + key + '=' + value;
@@ -63,7 +69,7 @@ export default function Project() {
 
     return (
         <Container>
-            <Header title="Cruz Store Analyzer" sections={sections} />
+            <Header title={projectname ? `Project: ${projectname}` : "Cruz Store Analyzer"} sections={sections} />
             <Grid container spacing={3} alignItems="center">
                 <Grid item xs={8}>
                     <TextField

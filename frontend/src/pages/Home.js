@@ -47,8 +47,11 @@ export default function Home() {
 
     async function createProject(projectname) {
         try {
-            sessionStorage.setItem('userid', userid);
-            if (!userid) {
+
+            sessionStorage.setItem('projectname', projectname);
+
+            var temp = sessionStorage.getItem('userid', userid);
+            if (!temp) {
                 console.error("User ID not found in session storage.");
                 return;
             }
