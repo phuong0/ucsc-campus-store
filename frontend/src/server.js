@@ -37,21 +37,16 @@ export const loadfile = async (projectid, userid, filedata) => {
         formData.append('userid', userid);
         formData.append('filedata', filedata);
 
-        const response = await axios.post(
-            "http://localhost:8000/load-file/",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+        const response = await axios.post("http://localhost:8000/load-file/", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
-        );
+        });
         console.log(response.data); 
     } catch (error) {
         console.error("Error:", error); 
     }
 };
-
 
 export const createproject = async (projectname, userid) => {
     try {

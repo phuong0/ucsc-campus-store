@@ -26,19 +26,19 @@ export default function Project() {
     const [currentFiles, setCurrentFiles] = useState([]);
     const [fileInput, setFileInput] = useState('');
     const [projectname, setProjectName] = useState('');
-    const [userid, setUserid] = useState('');
-    const [projectid, setProjectId] = useState(null);
+    const [userid, setUserId] = useState('');
 
 
     useEffect(() => {
-        const temp = sessionStorage.getItem('projectname');
-        const temp1 = sessionStorage.getItem('userid')
-        setProjectName(temp);
-        setUserid(temp1)
-
-        setprojectid(temp, temp1).then(projectid => {
-            setProjectId(projectid); 
-        });
+        const storedUserId = sessionStorage.getItem('userid');
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+        const storedProjectName = sessionStorage.getItem('projectname');
+        if (storedProjectName) {
+            setProjectName(storedProjectName);
+        }
+        
     }, []);
 
     function parameterizeArray(key, value) {
@@ -59,16 +59,21 @@ export default function Project() {
         setFileInput(event.target.files[0]);
     };
 
-    const handleUpload = () => {
-        if (fileInput) {
-            // Update state based on current category
-            loadfile(projectid, userid, fileInput);
-            setCurrentFiles(prevFiles => {
-                const newFiles = [...prevFiles, fileInput];
-                console.log(newFiles);  // Log the updated files list
-                return newFiles;
-            });
-            setFileInput('');
+    const handleUpload = async () => {
+        try {
+            if (fileInput) {
+                // Call setprojectid to store the project ID
+                const id = await setprojectid(userid, projectname);
+                
+                // Call the loadfile function passing the project ID, user ID, and file data
+                loadfile(id, userid, fileInput);
+                
+                // Update state based on current category
+                setCurrentFiles(prevFiles => [...prevFiles, fileInput]);
+                setFileInput('');
+            }
+        } catch (error) {
+            console.error("Error:", error);
         }
     };
 
