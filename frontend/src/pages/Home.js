@@ -11,6 +11,7 @@ import ProjectDropdown from "../components/ProjectDropdown";
 
 import {createproject} from "../server"
 import {deleteproject} from "../server"
+import { setprojectid } from "../server";
 
 /*
 - homepage for data
@@ -28,6 +29,7 @@ export default function Home() {
     const [projects, setProjects] = React.useState([]);
     const [name, setName] = useState('');
     const [userid, setUserId] = useState('');
+    const [selectedProject, setSelectedProject] = useState('');
 
     useEffect(() => {
         const storedUserId = sessionStorage.getItem('userid');
@@ -57,6 +59,7 @@ export default function Home() {
             }
             
             await createproject(projectname, userid);
+
             
             var url = "/projects" + parameterizeArray('project', projectname);
             window.location.href = url;
@@ -69,21 +72,20 @@ export default function Home() {
         setName(event.target.value); // Update input value in state
     }
 
-    async function deleteProject(projectname) {
+    async function deleteProject(projectName) {
         try {
-            sessionStorage.setItem('userid', userid);
+            console.log(projectName);
             if (!userid) {
                 console.error("User ID not found in session storage.");
                 return;
             }
-            
-            await deleteproject(projectname, userid);
-            
+            await deleteproject(projectName, userid);
+            setProjects(projects.filter(project => project !== projectName));
         } catch (error) {
-            console.error("Error:", error); 
+            console.error("Error:", error);
         }
     }
-
+    
     return (
         <Container>
             <CssBaseline />
@@ -156,7 +158,7 @@ export default function Home() {
                                         <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid}/>
                                     </Grid>
                                     <Grid item>
-                                        <Button variant="contained" onClick={() => deleteProject()}>Delete</Button>
+                                        <Button variant="contained" onClick={() => deleteProject(selectedProject)}>Delete</Button>
                                     </Grid>
                                 </Grid>
                             </Grid>
