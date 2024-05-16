@@ -257,6 +257,7 @@ def load_file(request):
         projectid = request.POST.get('projectid')  
         userid = request.POST.get('userid')
         file_data = request.FILES.get('filedata') 
+        ("bruh ")
      
         if not file_data:
             return JsonResponse({'error': 'No file provided'}, status=400)
@@ -265,6 +266,7 @@ def load_file(request):
 
         with connection.cursor() as cursor:
             try:
+                ("about to try ")
                 # Read file data
                 file_content = file_data.read()
 
@@ -275,6 +277,7 @@ def load_file(request):
                 return JsonResponse({'message': 'File uploaded successfully'}, status=201)
             except Exception as e:
                 connection.rollback()
+                ("it stopped here")
                 return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
