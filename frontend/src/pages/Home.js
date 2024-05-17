@@ -72,10 +72,10 @@ export default function Home() {
     function handleChange(event) {
         setName(event.target.value); // Update input value in state
     }
-
+    
     async function deleteProject(projectName) {
         try {
-            console.log(projectName);
+            
             if (!userid) {
                 console.error("User ID not found in session storage.");
                 return;
@@ -156,7 +156,7 @@ export default function Home() {
                                     spacing={3}
                                 >
                                     <Grid item>
-                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid}/>
+                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid} setSelectedProject={setSelectedProject}/>
                                     </Grid>
                                     <Grid item>
                                         <Button variant="contained" onClick={() => deleteProject(selectedProject)}>Delete</Button>

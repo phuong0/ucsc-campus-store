@@ -18,7 +18,7 @@ CREATE TABLE files (
     projectid INT NOT NULL,
     userid INT NOT NULL,
     filedata LONGBLOB NOT NULL,
-    FOREIGN KEY (projectid) REFERENCES projects(projectid),
+    FOREIGN KEY (projectid) REFERENCES projects(projectid) ON DELETE CASCADE,
     FOREIGN KEY (userid) REFERENCES accountinfo(userid)
 );
 
@@ -27,6 +27,6 @@ CREATE TABLE sortedfile (
     projectid INT NOT NULL,
     userid INT NOT NULL,
     filedata LONGBLOB NOT NULL,
-    FOREIGN KEY (projectid) REFERENCES projects(projectid),
+    FOREIGN KEY (projectid) REFERENCES projects(projectid) ON DELETE CASCADE,
     FOREIGN KEY (userid) REFERENCES accountinfo(userid)
 );

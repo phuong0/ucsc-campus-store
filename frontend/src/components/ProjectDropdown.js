@@ -25,7 +25,6 @@ const MenuProps = {
 export default function ProjectDropdown(props) {
     const [projectList, setProjectList] = React.useState([]); 
     const [userid, setUserId] = useState('');// State to store the list of projects
-    const [selectedProject, setSelectedProject] = useState('');
 
     React.useEffect(() => {
         // Fetch projects when the component mounts
@@ -44,7 +43,7 @@ export default function ProjectDropdown(props) {
     };
 
     const handleChange = (event) => {
-        setSelectedProject(event.target.value);
+        props.setSelectedProject(event.target.value);
         props.setProjects(event.target.value);
     };
 
