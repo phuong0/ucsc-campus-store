@@ -22,11 +22,14 @@ const MenuProps = {
 
 export default function CategoryDropdown(props) {
     const fetched = []
-    for (const [key, value] of props.categories.entries()) {
-        for (const arrayValue of Object.values(value)) {
-            fetched.push(...arrayValue);
-        }
-      }
+    if (props.categories){
+        for (const [key, value] of props.categories.entries()) {
+            for (const arrayValue of Object.values(value)) {
+                fetched.push(...arrayValue);
+            }
+          }
+    }
+    
     
 
     const handleChange = (event) => {

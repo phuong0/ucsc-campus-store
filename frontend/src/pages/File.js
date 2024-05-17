@@ -46,7 +46,7 @@ export default function File() {
         if (storedUserId) {
             setUserId(storedUserId);
         }
-    }, []);
+    }, [categories]);
 
     const handleKeywords = (event) => {
         setKeywords(event.target.value)
