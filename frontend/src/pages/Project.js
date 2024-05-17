@@ -67,7 +67,7 @@ export default function Project() {
                 const id = await setprojectid(userid, projectname);
                 
                 // Call the loadfile function passing the project ID, user ID, and file data
-                loadfile(id, userid, fileInput);
+                await loadfile(id, userid, fileInput);
                 
                 // Update state based on current category
                 setCurrentFiles(prevFiles => [...prevFiles, fileInput]);

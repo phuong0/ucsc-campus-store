@@ -101,11 +101,21 @@ def get_login(request):
 
 def get_categories(request):
     if request.method == 'POST':
+        data = json.loads(request.body)
+        projectName = data.get('projectName')
+        userid = data.get('userid')
+        print(projectName)
+        print(userid)
+
         try:
             with connection.cursor() as cursor:
-                cursor.execute("SELECT filedata FROM files")
-                files = cursor.fetchall()
+                cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])
+                projectid = cursor.fetchall()
+            print(projectid[0][0])
 
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid[0][0]])
+                files = cursor.fetchall()
             
             if not files:
                 return JsonResponse({'error': 'No files were provided'}, status=400)
@@ -297,7 +307,7 @@ def create_project(request):
                 cursor.execute("INSERT INTO projects (projectid, projectname, userid) VALUES (%s, %s, %s)",
                                [projectid, projectname, userid])
                 connection.commit()
-                return JsonResponse({'message': 'Project created successfully'}, status=201)
+                return JsonResponse(projectid, safe=False, status=201)
             except Exception as e:
                 connection.rollback()
                 return JsonResponse({'error': str(e)}, status=500)

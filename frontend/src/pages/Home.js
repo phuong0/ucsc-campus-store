@@ -50,9 +50,8 @@ export default function Home() {
 
     async function createProject(projectname) {
         try {
-
+            sessionStorage.setItem('selectedProject', projectname)
             sessionStorage.setItem('projectname', projectname);
-
             var temp = sessionStorage.getItem('userid', userid);
             if (!temp) {
                 console.error("User ID not found in session storage.");
@@ -60,7 +59,6 @@ export default function Home() {
             }
             
             await createproject(projectname, userid);
-
             
             var url = "/projects" + parameterizeArray('project', projectname);
             window.location.href = url;
@@ -68,7 +66,7 @@ export default function Home() {
             console.error("Error:", error); 
         }
     }
-
+    console.log(`projid: ${sessionStorage.getItem('projectId')}`);
     function handleChange(event) {
         setName(event.target.value); // Update input value in state
     }
@@ -156,7 +154,7 @@ export default function Home() {
                                     spacing={3}
                                 >
                                     <Grid item>
-                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid} setSelectedProject={setSelectedProject}/>
+                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid} selectedProject={selectedProject} setSelectedProject={setSelectedProject}/>
                                     </Grid>
                                     <Grid item>
                                         <Button variant="contained" onClick={() => deleteProject(selectedProject)}>Delete</Button>
@@ -182,7 +180,7 @@ export default function Home() {
                                     spacing={3}
                                 >
                                     <Grid item>
-                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid} />
+                                        <ProjectDropdown projects={projects} setProjects={setProjects} userid={userid} selectedProject={selectedProject} setSelectedProject={setSelectedProject}/>
                                     </Grid>
                                     <Grid item>
                                         <Button variant="contained" onClick={() => goToProjects()}>Go</Button>

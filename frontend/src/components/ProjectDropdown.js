@@ -43,6 +43,7 @@ export default function ProjectDropdown(props) {
     };
 
     const handleChange = (event) => {
+        sessionStorage.setItem('selectedProject', event.target.value)
         props.setSelectedProject(event.target.value);
         props.setProjects(event.target.value);
     };

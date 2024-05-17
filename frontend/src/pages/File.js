@@ -38,7 +38,6 @@ export default function File() {
     const [keywords, setKeywords] = React.useState('');
     const [userid, setUserId] = React.useState('');
 
-    console.log(keywords)
 
     React.useEffect(() => {
         sendReq();
@@ -54,7 +53,7 @@ export default function File() {
 
     const sendReq = async () => {
         try {
-            const cat = await getcategories();
+            const cat = await getcategories(sessionStorage.getItem('selectedProject'), userid);
             setCategories(cat)
             
         } catch (error) {

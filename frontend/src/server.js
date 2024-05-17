@@ -31,9 +31,12 @@ export const login = async (email, passcode) => {
 }; 
 
 export const loadfile = async (projectid, userid, filedata) => {
+    console.log(projectid[0])
+    console.log(userid)
+    console.log(filedata)
     try {
         const formData = new FormData();
-        formData.append('projectid', projectid);
+        formData.append('projectid', projectid[0]);
         formData.append('userid', userid);
         formData.append('filedata', filedata);
 
@@ -83,9 +86,12 @@ export const deleteproject = async (projectname, userid) => {
     }
 };
 
-export const getcategories = async () => {
+export const getcategories = async (projectName, userid) => {
     try {
-        const response = await axios.post("http://localhost:8000/get-categories");
+        const response = await axios.post("http://localhost:8000/get-categories", {
+            projectName: projectName,
+            userid: userid
+        });
         console.log(response.data); 
         return response.data
     } catch (error) {
