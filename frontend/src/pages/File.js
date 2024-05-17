@@ -14,6 +14,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import category from "../assets/category.png";
 import fullsearch from "../assets/magnifying.png";
+import ai from "../assets/ai.png";
 
 import {getcategories, categoryFile, fullTextFile} from "../server"
 
@@ -27,6 +28,7 @@ const originUrl = window.location.origin;
 const sections = [
     { title: "Home", url: originUrl + "/home" },
     { title: "Change Password", url: originUrl + "/home" },
+    { title: "Log Out", url: originUrl + "/home" },
 ];
 
 export default function File() {
@@ -34,14 +36,16 @@ export default function File() {
     const [files, setFiles] = React.useState([]);
     const [label, setLabel] = React.useState('');
     const [keywords, setKeywords] = React.useState('');
+    const [userid, setUserId] = React.useState('');
 
     console.log(keywords)
 
-
-    
-
     React.useEffect(() => {
         sendReq();
+        const storedUserId = sessionStorage.getItem('userid');
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
     }, []);
 
     const handleKeywords = (event) => {
@@ -127,7 +131,7 @@ export default function File() {
         <Container>
             <CssBaseline />
             <Container maxWidth="lg">
-                <Header title="Cruz Store Analyzer" sections={sections} />
+                <Header title="Cruz Store Analyzer" sections={sections} userid={userid} />
                 <main>
                     <Container container>
                         <Grid
@@ -156,7 +160,7 @@ export default function File() {
                                     alignItems="center"
                                     style={{ marginTop: "-24px" }}
                                 >
-                                    <Grid item>
+                                    <Grid item style={{ marginTop: "2px" }}>
                                         <CategoryDropdown categories={categories} setCategories={setCategories} label={label} setLabel={setLabel}/>
                                     </Grid>
                                 </Grid>
@@ -179,6 +183,7 @@ export default function File() {
                                     justifyContent="center"
                                     alignItems="center"
                                     spacing={3}
+                                    style={{ marginTop: "-35px" }}
                                 >
                                     <Grid item>
                                         <TextField
@@ -186,6 +191,47 @@ export default function File() {
                                             id="full-search"
                                             label="Full Search"
                                             name="full-search"
+                                            autoFocus
+                                            onChange={handleKeywords}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            sx={{ mt: 3 }}
+                                        >
+                                            Search
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid
+                                item
+                                container
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
+                                xs="4"
+                            >
+                                <Typography variant="h5" color="inherit" paragraph>
+                                    AI Search
+                                </Typography>
+                                <Grid
+                                    item
+                                    container
+                                    direction="row"
+                                    justifyContent="center"
+                                    alignItems="center"
+                                    spacing={3}
+                                    style={{ marginTop: "-35px" }}
+                                >
+                                    <Grid item>
+                                        <TextField
+                                            margin="normal"
+                                            id="ai-search"
+                                            label="AI Search"
+                                            name="ai-search"
                                             autoFocus
                                             onChange={handleKeywords}
                                         />
@@ -265,9 +311,9 @@ export default function File() {
                                 <Card sx={{ minWidth: 345 }}>
                                     <CardMedia
                                         component="img"
-                                        alt="category image"
+                                        alt="ai image"
                                         height="155"
-                                        image={category}
+                                        image={ai}
                                     />
                                     <CardContent>
                                         <Typography gutterBottom variant="h5" component="div">

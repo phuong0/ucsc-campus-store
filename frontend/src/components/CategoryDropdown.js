@@ -35,11 +35,11 @@ export default function CategoryDropdown(props) {
     
     return (
         <div>
-            <FormControl sx={{ m: 1, minWidth: 150 }}>
-                <InputLabel id="simple-select-autowidth-label">Categories</InputLabel>
+            <FormControl sx={{ m: 1, minWidth: 250 }}>
+                <InputLabel id="simple-select-label">Categories</InputLabel>
                 <Select
-                    labelId="simple-select-autowidth-label"
-                    id="simple-select-autowidth"
+                    labelId="simple-select-label"
+                    id="simple-select"
                     value={props.label}
                     onChange={handleChange}
                     input={<OutlinedInput label="Categories" />}
