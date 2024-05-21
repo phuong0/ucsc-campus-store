@@ -84,7 +84,7 @@ export default function File() {
 
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'Full Text.xlsx');
+            link.setAttribute('download', `${keywords}.xlsx`);
             link.style.display = 'none';
             document.body.appendChild(link);
 
