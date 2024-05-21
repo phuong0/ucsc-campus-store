@@ -100,9 +100,6 @@ export const getcategories = async (projectName, userid) => {
 }
 
 export const categoryFile = async (cats, projectName, userid) => {
-    console.log(projectName)
-    console.log(userid)
-    console.log(cats)
     try {
         const response = await fetch('http://127.0.0.1:8000/process_files', {
           method: 'POST',
@@ -131,6 +128,34 @@ export const categoryFile = async (cats, projectName, userid) => {
 export const fullTextFile = async (keywords, projectName, userid) => {
     try {
         const response = await fetch('http://127.0.0.1:8000/full_text_search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            keywords: keywords,
+            projectName: projectName,
+            userid: userid
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
+
+export const fullTextSummary = async (keywords, projectName, userid) => {
+    console.log(projectName)
+    console.log(userid)
+    console.log(keywords)
+    try {
+        const response = await fetch('http://127.0.0.1:8000/full_text_summary', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

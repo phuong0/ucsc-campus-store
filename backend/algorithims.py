@@ -53,7 +53,6 @@ def full_textSummary(files, keywords):
             summary[keyword] = x
         y += 1
         ret[f"file{y}"] = summary
-
     return ret
 
 
