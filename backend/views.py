@@ -174,7 +174,6 @@ def full_text_summary(request):
                     df = pd.read_csv(file)
                     dfs.append(df)
                 elif 'sheet' in kind.mime:
-                    print("Sheet")
                     df = pd.read_excel(file)
                     dfs.append(df)
                 else:
@@ -197,29 +196,35 @@ def full_text_summary(request):
 
 def full_text_search(request):
     if request.method == 'POST':
+        data = json.loads(request.body)
+        projectName = data.get('projectName')
+        userid = data.get('userid')
         try:
             with connection.cursor() as cursor:
-                cursor.execute("SELECT filedata FROM files")
+                cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])
+                projectid = cursor.fetchall()
+            
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid[0][0]])
                 files = cursor.fetchall()
 
-            
+
             if not files:
                 return JsonResponse({'error': 'No files were provided'}, status=400)
 
             dfs = []
             for file_data, in files:
                 file = io.BytesIO(file_data)
-                mime = magic.Magic(mime=True)
-                file_type = mime.from_buffer(file_data)
-                if 'sheet' in file_type:
-                    df = pd.read_excel(file)
-                    dfs.append(df)
-                elif 'csv' in file_type:
+                kind = filetype.guess(file_data)
+
+                if kind == None:
                     df = pd.read_csv(file)
                     dfs.append(df)
+                elif 'sheet' in kind.mime:
+                    df = pd.read_excel(file)
+                    dfs.append(df)
                 else:
-                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
-            
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)    
             output_file_path = 'full-text.xlsx'
             data = json.loads(request.body.decode('utf-8'))
             keywords = data.get('keywords', [])
@@ -374,12 +379,9 @@ def process_files(request):
         projectName = data.get('projectName')
         userid = data.get('userid')
         try:
-            print('sql bad')
             with connection.cursor() as cursor:
                 cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])
                 projectid = cursor.fetchall()
-            print(projectid)
-            print('sql good1')
             with connection.cursor() as cursor:
                 cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid[0][0]])
                 files = cursor.fetchall()

@@ -128,7 +128,7 @@ export const categoryFile = async (cats, projectName, userid) => {
 }
 
 
-export const fullTextFile = async (keywords) => {
+export const fullTextFile = async (keywords, projectName, userid) => {
     try {
         const response = await fetch('http://127.0.0.1:8000/full_text_search', {
           method: 'POST',
@@ -136,7 +136,9 @@ export const fullTextFile = async (keywords) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            keywords: keywords
+            keywords: keywords,
+            projectName: projectName,
+            userid: userid
           })
         });
 

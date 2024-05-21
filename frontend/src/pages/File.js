@@ -69,11 +69,11 @@ export default function File() {
                 console.log("String matches the pattern");
             }
             else {
-                window.alert('Full Text must be comma seperated with spaces \n Example: Keyword1, Keyword2, Keyword3')
+                window.alert('Full Text must be comma seperated with spaces with no numbers \n Example: Keyword1, Keyword2, Keyword3')
                 throw new Error('Badly Formed String');
             }
             const keys = keywords.split(", ")
-            const response = await fullTextFile(keys);
+            const response = await fullTextFile(keys, sessionStorage.getItem('selectedProject'), userid);
       
             if (!response.ok) {
               throw new Error('Failed to fetch');
