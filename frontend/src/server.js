@@ -99,7 +99,10 @@ export const getcategories = async (projectName, userid) => {
     }
 }
 
-export const categoryFile = async (cats) => {
+export const categoryFile = async (cats, projectName, userid) => {
+    console.log(projectName)
+    console.log(userid)
+    console.log(cats)
     try {
         const response = await fetch('http://127.0.0.1:8000/process_files', {
           method: 'POST',
@@ -107,7 +110,9 @@ export const categoryFile = async (cats) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            categories: cats
+            categories: cats,
+            projectName: projectName,
+            userid: userid
           })
         });
 

@@ -149,9 +149,16 @@ def get_categories(request):
 
 def full_text_summary(request):
     if request.method == 'POST':
+        data = json.loads(request.body)
+        projectName = data.get('projectName')
+        userid = data.get('userid')
         try:
             with connection.cursor() as cursor:
-                cursor.execute("SELECT filedata FROM files")
+                cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])
+                projectid = cursor.fetchall()
+            
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid[0][0]])
                 files = cursor.fetchall()
 
             
@@ -161,13 +168,14 @@ def full_text_summary(request):
             dfs = []
             for file_data, in files:
                 file = io.BytesIO(file_data)
-                mime = magic.Magic(mime=True)
-                file_type = mime.from_buffer(file_data)
-                if 'sheet' in file_type:
-                    df = pd.read_excel(file)
-                    dfs.append(df)
-                elif 'csv' in file_type:
+                kind = filetype.guess(file_data)
+
+                if kind == None:
                     df = pd.read_csv(file)
+                    dfs.append(df)
+                elif 'sheet' in kind.mime:
+                    print("Sheet")
+                    df = pd.read_excel(file)
                     dfs.append(df)
                 else:
                     return JsonResponse({'error': 'Unsupported file format'}, status=400)
@@ -362,33 +370,43 @@ def delete_project(request):
 @csrf_exempt
 def process_files(request):
     if request.method == 'POST':
+        data = json.loads(request.body)
+        projectName = data.get('projectName')
+        userid = data.get('userid')
         try:
+            print('sql bad')
             with connection.cursor() as cursor:
-                cursor.execute("SELECT filedata FROM files")
+                cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])
+                projectid = cursor.fetchall()
+            print(projectid)
+            print('sql good1')
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid[0][0]])
                 files = cursor.fetchall()
 
-            
+            print('sql good')
             if not files:
                 return JsonResponse({'error': 'No files were provided'}, status=400)
-            
-            dataframes = []
 
+            dfs = []
             for file_data, in files:
                 file = io.BytesIO(file_data)
-                mime = magic.Magic(mime=True)
-                file_type = mime.from_buffer(file_data)
-                if 'sheet' in file_type:
-                    df = pd.read_excel(file)
-                elif 'csv' in file_type:
+                kind = filetype.guess(file_data)
+
+                if kind == None:
                     df = pd.read_csv(file)
+                    dfs.append(df)
+                elif 'sheet' in kind.mime:
+                    print("Sheet")
+                    df = pd.read_excel(file)
+                    dfs.append(df)
                 else:
                     return JsonResponse({'error': 'Unsupported file format'}, status=400)
-                
-                dataframes.append(df)
+        
             output_file_path = 'output.xlsx'
             data = json.loads(request.body.decode('utf-8'))
             categories = data.get('categories', [])
-            filter_and_save(categories, dataframes, output_file_path)
+            filter_and_save(categories, dfs, output_file_path)
             return FileResponse(open(output_file_path, 'rb'), as_attachment=True, filename='output.xlsx')
                         
         except Exception as e:

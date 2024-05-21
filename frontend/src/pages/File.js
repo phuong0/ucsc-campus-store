@@ -99,9 +99,8 @@ export default function File() {
     }
 
     const downloadCategories = async () => {
-        
         try {
-            const response = await categoryFile([label]);
+            const response = await categoryFile([label], sessionStorage.getItem('selectedProject'), userid);
       
             if (!response.ok) {
               throw new Error('Failed to fetch');
