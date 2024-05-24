@@ -64,16 +64,9 @@ export default function File() {
     const handleFullTextDownload = async () => {
         
         try {
-            const regex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
-            if (regex.test(keywords)) {
-                console.log("String matches the pattern");
-            }
-            else {
-                window.alert('Full Text must be comma seperated with spaces with no numbers \n Example: Keyword1, Keyword2, Keyword3')
-                throw new Error('Badly Formed String');
-            }
-            const keys = keywords.split(", ")
-            const response = await fullTextFile(keys, sessionStorage.getItem('selectedProject'), userid);
+            const keys = keywords.split(",")
+            const keys2 = keys.map((key) => key.trim())
+            const response = await fullTextFile(keys2, sessionStorage.getItem('selectedProject'), userid);
       
             if (!response.ok) {
               throw new Error('Failed to fetch');
@@ -127,16 +120,9 @@ export default function File() {
 
     const handleFullTextSearch = async () => {
         try {
-            const regex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
-            if (regex.test(keywords)) {
-                console.log("String matches the pattern");
-            }
-            else {
-                window.alert('Full Text must be comma seperated with spaces with no numbers \n Example: Keyword1, Keyword2, Keyword3')
-                throw new Error('Badly Formed String');
-            }
-            const keys = keywords.split(", ")
-            const response = await fullTextSummary(keys, sessionStorage.getItem('selectedProject'), userid);
+            const keys = keywords.split(",")
+            const keys2 = keys.map((key) => key.trim())
+            const response = await fullTextSummary(keys2, sessionStorage.getItem('selectedProject'), userid);
             if (!response.ok) {
               throw new Error('Failed to fetch');
             }
