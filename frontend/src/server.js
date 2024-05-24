@@ -30,15 +30,18 @@ export const login = async (email, passcode) => {
     }
 }; 
 
-export const loadfile = async (projectid, userid, filedata) => {
+export const loadfile = async (projectid, userid, filedata, fileName) => {
     console.log(projectid[0])
     console.log(userid)
     console.log(filedata)
+    console.log(fileName)
     try {
         const formData = new FormData();
         formData.append('projectid', projectid[0]);
         formData.append('userid', userid);
         formData.append('filedata', filedata);
+        formData.append('filename', fileName);
+
 
         const response = await axios.post("http://localhost:8000/load-file/", formData, {
             headers: {

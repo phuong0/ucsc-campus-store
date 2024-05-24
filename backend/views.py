@@ -276,13 +276,13 @@ def load_file(request):
         projectid = request.POST.get('projectid')  
         userid = request.POST.get('userid')
         file_data = request.FILES.get('filedata') 
-
+        file_name = request.POST.get('filename') 
+        print(file_name)
      
         if not file_data:
             return JsonResponse({'error': 'No file provided'}, status=400)
         if not projectid or not userid:
             return JsonResponse({'error': 'Project ID and User ID are required'}, status=400)
-
         with connection.cursor() as cursor:
             try:
                 #("about to try ")
@@ -290,8 +290,9 @@ def load_file(request):
                 file_content = file_data.read()
 
                 # Insert file data into the database
-                cursor.execute("INSERT INTO files (projectid, userid, filedata) VALUES (%s, %s, %s)", [projectid, userid, file_content])
+                cursor.execute("INSERT INTO files (projectid, userid, filedata, file_name) VALUES (%s, %s, %s, %s)", [projectid, userid, file_content, file_name])
                 connection.commit()
+                print('ok')
 
                 return JsonResponse({'message': 'File uploaded successfully'}, status=201)
             except Exception as e:
@@ -433,3 +434,20 @@ def store_projectid(request):
 
     # Return the fetched projectid in JSON format
     return JsonResponse({'projectid': projectid}, safe=False)
+
+def get_files(request):
+    userid = request.GET.get('userid')
+    projectid = request.GET.get('projectid')
+
+
+    if not userid:
+        return JsonResponse({'error': 'User ID is required'}, status=400)
+    
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid])
+        data = cursor.fetchall()
+
+    files = [row[0] for row in data]
+
+    # Return the fetched data in JSON format
+    return JsonResponse(files, safe=False)

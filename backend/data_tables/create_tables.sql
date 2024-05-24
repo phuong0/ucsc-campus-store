@@ -18,6 +18,7 @@ CREATE TABLE files (
     projectid INT NOT NULL,
     userid INT NOT NULL,
     filedata LONGBLOB NOT NULL,
+    file_name VARCHAR(100) NOT NULL,
     FOREIGN KEY (projectid) REFERENCES projects(projectid) ON DELETE CASCADE,
     FOREIGN KEY (userid) REFERENCES accountinfo(userid)
 );

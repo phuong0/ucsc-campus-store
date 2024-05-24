@@ -28,6 +28,7 @@ export default function Project() {
     const [fileInput, setFileInput] = useState('');
     const [projectname, setProjectName] = useState('');
     const [userid, setUserId] = useState('');
+    const [fileName, setFileName] = useState('')
 
 
     useEffect(() => {
@@ -55,9 +56,10 @@ export default function Project() {
         }
 
         // Call the loadfile function passing the file data
-        console.log(event.target.files[0]);
         //loadfile(event.target.files[0]);
         setFileInput(event.target.files[0]);
+        setFileName(event.target.files[0].name)
+
     };
 
     const handleUpload = async () => {
@@ -67,7 +69,7 @@ export default function Project() {
                 const id = await setprojectid(userid, projectname);
                 
                 // Call the loadfile function passing the project ID, user ID, and file data
-                await loadfile(id, userid, fileInput);
+                await loadfile(id, userid, fileInput, fileName);
                 
                 // Update state based on current category
                 setCurrentFiles(prevFiles => [...prevFiles, fileInput]);
