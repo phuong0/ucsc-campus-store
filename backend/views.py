@@ -435,19 +435,18 @@ def store_projectid(request):
     # Return the fetched projectid in JSON format
     return JsonResponse({'projectid': projectid}, safe=False)
 
-def get_files(request):
+def get_fileNames(request):
     userid = request.GET.get('userid')
     projectid = request.GET.get('projectid')
-
 
     if not userid:
         return JsonResponse({'error': 'User ID is required'}, status=400)
     
     with connection.cursor() as cursor:
-        cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid])
+        cursor.execute("SELECT file_name FROM files WHERE userid = %s AND projectid = %s", [userid, projectid])
         data = cursor.fetchall()
 
-    files = [row[0] for row in data]
+    file_names = [row[0] for row in data]
 
     # Return the fetched data in JSON format
-    return JsonResponse(files, safe=False)
+    return JsonResponse(file_names, safe=False)
