@@ -77,6 +77,17 @@ export const getproject = async (userid) => {
     }
 };
 
+export const getFileName = async (userid, projectid) => {
+    try {
+        const response = await axios.get(
+            `http://localhost:8000/get_fileNames?userid=${userid}&projectid=${projectid}`);
+        //console.log(response.data); 
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+};
+
 export const deleteproject = async (projectname, userid) => {
     try {
         const response = await axios.post("http://localhost:8000/delete-project/", {
@@ -191,6 +202,16 @@ export const setprojectid = async (userid, projectname) => {
             });
         console.log(response.data); 
         return response.data.projectid;
+    } catch (error) {
+        console.error("Error:", error); 
+    }
+}; 
+
+export const getProjectid = async (userid, projectname) => {
+    try {
+        const response = await axios.get(
+            `http://localhost:8000/get_projectid?userid=${userid}&projectname=${projectname}`);
+        return response.data;
     } catch (error) {
         console.error("Error:", error); 
     }

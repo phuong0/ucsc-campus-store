@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 import Typography from '@mui/material/Typography';
 import TextField from "@mui/material/TextField";
 import { loadfile } from "../server";
-import { setprojectid } from "../server";
+import { setprojectid, getFileName, getProjectid } from "../server";
 
 /*
 - project page
@@ -17,7 +17,6 @@ const originUrl = window.location.origin;
 
 const sections = [
     { title: "Home", url: originUrl + "/home" },
-    { title: "Change Password", url: originUrl + "/home" },
     { title: "Log Out", url: originUrl + "/home" },
 ];
 
@@ -28,8 +27,8 @@ export default function Project() {
     const [fileInput, setFileInput] = useState('');
     const [projectname, setProjectName] = useState('');
     const [userid, setUserId] = useState('');
-    const [fileName, setFileName] = useState('')
-
+    const [fileName, setFileName] = useState('');
+    const [projectId, setProjectId] = useState('');
 
     useEffect(() => {
         const storedUserId = sessionStorage.getItem('userid');
@@ -40,8 +39,31 @@ export default function Project() {
         if (storedProjectName) {
             setProjectName(storedProjectName);
         }
-        
-    }, []);
+
+        const getFiles = async (userid, projectid) => {
+            try {
+                const files = await getFileName(userid, projectid);
+                setHistoryFiles(files);
+            } catch (error) {
+                console.error("Error fetching files:", error);
+            }
+        };
+
+        const fetchProjectIdAndFiles = async (userid, projectName) => {
+            try {
+                const id = await getProjectid(userid, projectName);
+                setProjectId(id);
+                await getFiles(userid, id);
+            } catch (error) {
+                console.error("Error fetching project ID and files:", error);
+            }
+        };
+
+        if (storedUserId && storedProjectName) {
+            fetchProjectIdAndFiles(storedUserId, storedProjectName);
+        }
+
+    }, [historyFiles]);
 
     function parameterizeArray(key, value) {
         return '?' + key + '=' + value;
@@ -67,10 +89,10 @@ export default function Project() {
             if (fileInput) {
                 // Call setprojectid to store the project ID
                 const id = await setprojectid(userid, projectname);
-                
+
                 // Call the loadfile function passing the project ID, user ID, and file data
                 await loadfile(id, userid, fileInput, fileName);
-                
+
                 // Update state based on current category
                 setCurrentFiles(prevFiles => [...prevFiles, fileInput]);
                 setFileInput('');
@@ -87,7 +109,7 @@ export default function Project() {
 
     return (
         <Container>
-            <Header title={projectname ? `Project: ${projectname}` : "Cruz Store Analyzer"} sections={sections} userid={userid}/>
+            <Header title={projectname ? `Project: ${projectname}` : "Cruz Store Analyzer"} sections={sections} userid={userid} />
             <Grid container spacing={3} alignItems="center">
                 <Grid item xs={8}>
                     <TextField
@@ -109,24 +131,32 @@ export default function Project() {
                         variant="contained"
                         color="primary"
                         onClick={handleDone}
-                        sx={{ marginLeft:"10px" }}
+                        sx={{ marginLeft: "10px" }}
                     >
                         Done
                     </Button>
                 </Grid>
             </Grid>
-            <Grid container spacing={3} sx={{marginTop: "10px"}}>
+            <Grid container spacing={3} sx={{ marginTop: "10px" }}>
                 <Grid item xs={6}>
-                    <Typography variant="h6">History</Typography>
-                    {historyFiles.map((file, index) => (
-                        <div key={index}>{file.name}</div>
-                    ))}
+                    <Typography variant="h6">All Files Uploaded</Typography>
+                    {historyFiles.length > 0 ? (
+                        historyFiles.map((file, index) => (
+                           <div key={index}>{file}</div>
+                        ))
+                    ) : (
+                        <div>No history available.</div>
+                    )}
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography variant="h6">Current Files</Typography>
-                    {currentFiles.map((file, index) => (
-                        <div key={index}>{file.name}</div>
-                    ))}
+                    <Typography variant="h6">Recent Files Uploaded</Typography>
+                    {currentFiles.length > 0 ? (
+                        currentFiles.map((file, index) => (
+                            <div key={index}>{file.name}</div>
+                        ))
+                    ) : (
+                        <div>No current files uploaded.</div>
+                    )}
                 </Grid>
             </Grid>
             <Footer

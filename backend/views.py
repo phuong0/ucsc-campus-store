@@ -450,3 +450,20 @@ def get_fileNames(request):
 
     # Return the fetched data in JSON format
     return JsonResponse(file_names, safe=False)
+
+def get_projectid(request):
+    userid = request.GET.get('userid')
+    projectname = request.GET.get('projectname')
+
+    if not userid and not projectname:
+        return JsonResponse({'error': 'User ID is required or projectname is required'}, status=400)
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT projectid FROM projects WHERE projectname = %s AND userid = %s", [projectname, userid])
+        data = cursor.fetchall()
+
+    # Convert the fetched data to a list
+    projects = [row[0] for row in data]
+
+    # Return the fetched data in JSON format
+    return JsonResponse(projects, safe=False)   
