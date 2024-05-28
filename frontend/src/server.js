@@ -192,6 +192,56 @@ export const fullTextSummary = async (keywords, projectName, userid) => {
     }
 }
 
+export const word2vec = async (keywords, projectName, userid) => {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/word2vec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            keywords: keywords,
+            projectName: projectName,
+            userid: userid
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
+
+export const word2vec_summary = async (keywords, projectName, userid) => {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/word2vec_summary', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            keywords: keywords,
+            projectName: projectName,
+            userid: userid
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
+
 export const setprojectid = async (userid, projectname) => {
     try {
         const response = await axios.post(

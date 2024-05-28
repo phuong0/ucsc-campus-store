@@ -8,7 +8,8 @@ from django.contrib.auth import authenticate
 from backend.algorithims import categories
 from backend.algorithims import full_text
 from backend.algorithims import full_textSummary
-from backend.algorithims import word2vec
+from backend.algorithims import word2vec_Summary
+from backend.algorithims import Word2vec
 from backend.algorithims import filter_and_save
 from nltk.tokenize import sent_tokenize, word_tokenize
 import pandas as pd
@@ -236,6 +237,106 @@ def full_text_search(request):
     
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+@csrf_exempt
+
+def word2vec_summary(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        projectName = data.get('projectName')
+        userid = data.get('userid')
+        print(projectName)
+        print(userid)
+        print(request)
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])
+                projectid = cursor.fetchall()
+            
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid[0][0]])
+                files = cursor.fetchall()
+
+            
+            if not files:
+                return JsonResponse({'error': 'No files were provided'}, status=400)
+
+            dfs = []
+            for file_data, in files:
+                file = io.BytesIO(file_data)
+                kind = filetype.guess(file_data)
+
+                if kind == None:
+                    df = pd.read_csv(file)
+                    dfs.append(df)
+                elif 'sheet' in kind.mime:
+                    df = pd.read_excel(file)
+                    dfs.append(df)
+                else:
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)
+            
+            data = json.loads(request.body.decode('utf-8'))
+            keywords = data.get('keywords', [])
+            print(keywords)
+            print(dfs)
+            summary = word2vec_Summary(dfs, keywords)
+            return JsonResponse(summary, safe=False, status=200)
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+
+
+@csrf_exempt
+
+def word2vec(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        projectName = data.get('projectName')
+        userid = data.get('userid')
+        print('donkey')
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])
+                projectid = cursor.fetchall()
+            
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT filedata FROM files WHERE userid = %s AND projectid = %s", [userid, projectid[0][0]])
+                files = cursor.fetchall()
+
+
+            if not files:
+                return JsonResponse({'error': 'No files were provided'}, status=400)
+
+            dfs = []
+            for file_data, in files:
+                file = io.BytesIO(file_data)
+                kind = filetype.guess(file_data)
+
+                if kind == None:
+                    df = pd.read_csv(file)
+                    dfs.append(df)
+                elif 'sheet' in kind.mime:
+                    df = pd.read_excel(file)
+                    dfs.append(df)
+                else:
+                    return JsonResponse({'error': 'Unsupported file format'}, status=400)    
+            output_file_path = 'word2vec.xlsx'
+            data = json.loads(request.body.decode('utf-8'))
+            keywords = data.get('keywords', [])
+            print('MONKEY DONKEY MONKEY')
+            Word2vec(dfs, keywords, output_file_path)
+            return FileResponse(open(output_file_path, 'rb'), as_attachment=True, filename='word2vec.xlsx')
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
 
 #@csrf_exempt
 #

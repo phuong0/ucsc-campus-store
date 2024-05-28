@@ -16,7 +16,7 @@ import category from "../assets/category.png";
 import fullsearch from "../assets/magnifying.png";
 import ai from "../assets/ai.png";
 
-import {getcategories, categoryFile, fullTextFile, fullTextSummary} from "../server"
+import {getcategories, categoryFile, fullTextFile, fullTextSummary, word2vec, word2vecSummary} from "../server"
 
 /*
 - files page
@@ -90,6 +90,43 @@ export default function File() {
           }
     }
 
+    const handleAIdownload = async () => {
+        
+        try {
+            const regex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
+            if (regex.test(keywords)) {
+                console.log("String matches the pattern");
+            }
+            else {
+                window.alert('Full Text must be comma seperated with spaces with no numbers \n Example: Keyword1, Keyword2, Keyword3')
+                throw new Error('Badly Formed String');
+            }
+            const keys = keywords.split(", ")
+            const response = await word2vec(keys, sessionStorage.getItem('selectedProject'), userid);
+      
+            if (!response.ok) {
+              throw new Error('Failed to fetch');
+            }
+            console.log(response)
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${keywords}.xlsx`);
+            link.style.display = 'none';
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            console.log('done')
+          } catch (error) {
+            console.error("Login Error:", error);
+          }
+    }
+
     const downloadCategories = async () => {
         try {
             const response = await categoryFile([label], sessionStorage.getItem('selectedProject'), userid);
@@ -132,6 +169,35 @@ export default function File() {
             console.log(dataString);
 
             let p = document.getElementById("full_text");
+            p.innerText = dataString
+
+          } catch (error) {
+            console.error("Login Error:", error);
+          }
+    }
+
+    const handleAIsearch = async() => {
+        try {
+            const regex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
+            if (regex.test(keywords)) {
+                console.log("String matches the pattern");
+            }
+            else {
+                window.alert('Full Text must be comma seperated with spaces with no numbers \n Example: Keyword1, Keyword2, Keyword3')
+                throw new Error('Badly Formed String');
+            }
+            const keys = keywords.split(", ")
+            const response = await word2vecSummary(keys, sessionStorage.getItem('selectedProject'), userid);
+            if (!response.ok) {
+              throw new Error('Failed to fetch');
+            }
+            console.log(response)
+
+            const data = await response.json();
+            const dataString = JSON.stringify(data);
+            console.log(dataString);
+
+            let p = document.getElementById("ai");
             p.innerText = dataString
 
           } catch (error) {
@@ -253,6 +319,7 @@ export default function File() {
                                         <Button
                                             type="submit"
                                             variant="contained"
+                                            onClick={handleAIsearch}
                                             sx={{ mt: 3 }}
                                         >
                                             Search
@@ -337,7 +404,7 @@ export default function File() {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button onClick={downloadCategories} size="small">Download</Button>
+                                        <Button onClick={handleAIdownload} size="small">Download</Button>
                                     </CardActions>
                                 </Card>
                             </Grid>

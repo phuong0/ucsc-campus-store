@@ -28,6 +28,8 @@ from backend.views import delete_project
 from backend.views import process_files
 from backend.views import full_text_summary
 from backend.views import store_projectid
+from backend.views import word2vec_summary
+from backend.views import word2vec
 from backend.views import get_fileNames
 from backend.views import get_projectid
 #from backend.views import word2vec_search
@@ -48,6 +50,8 @@ urlpatterns = [
     path('store-projectid/', store_projectid, name='store_projectid'),
     path('get_fileNames/', get_fileNames, name='get_fileNames'),
     path('get_projectid/', get_projectid, name='get_projectid'),
+    path('word2vec_summary', word2vec_summary, name='word2vec_summary'),
+    path('word2vec', word2vec, name='word2vec'),
    #path('word2vec_search', word2vec_search, name='word2vec_search')
 ]
 
