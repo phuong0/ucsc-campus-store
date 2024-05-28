@@ -1,5 +1,20 @@
 import pandas as pd
 import numpy as np
+import gensim
+import os
+
+cwd = os.getcwd()
+
+# Combine the current working directory with the relative file path
+model_path = os.path.join(cwd, 'GoogleNews-vectors-negative300.bin')
+
+print(f"Absolute path of the model: {model_path}")
+
+if os.path.exists(model_path):
+        model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
+        print("Model loaded successfully.")
+else:
+        print("Model file not found.")
 
 def categories(df):
     ret = {}
@@ -115,48 +130,127 @@ def similarity(keyword, words, model):
     print(max_sim)
     return max_sim
 
-def word2vec(df, keywords, model):
+ 
+def word2vec_Summary(files, keywords):
+    print('hello')
+    ret = {}
     summary = {}
     price_column = ''
     quantity_column = ''
-    
+    y = 0 
+    rows = pd.DataFrame()
+    print('we are in the summary')
     # Identify specific columns
-    for column_name in df.columns:
-        if 'Price' in column_name or 'Total' in column_name and not price_column:
-            price_column = column_name
-        elif 'Quantity' in column_name and not quantity_column:
-            quantity_column = column_name
-        if price_column and quantity_column:
-            break
+    for df in files:
+        for column_name in df.columns:
+            if 'Price' in column_name or 'Total' in column_name and not price_column:
+                price_column = column_name
+            elif 'Quantity' in column_name and not quantity_column:
+                quantity_column = column_name
+            if price_column and quantity_column:
+                break
     
     # Convert DataFrame to string
-    str_df = df.astype(str)
-    for keyword in keywords:
-        matched_indices = []
-        for col in str_df:
-            for index, entry in str_df[col].iteritems():
-                words = entry.lower().split()
-                if similarity(keyword, words, model) > 0.8:
-                    matched_indices.append(index)
+        summary = {}
         
-        # Aggregate matched data
-        matched_rows = df.loc[set(matched_indices)]
-        matched_rows[price_column] = matched_rows[price_column].astype(float)
-        matched_rows[quantity_column] = matched_rows[quantity_column].astype(float)
-
-        netPrice = matched_rows[price_column].sum()
-        quant = matched_rows[quantity_column].sum()
-
-        # Store results
-        summary[keyword] = {
-            'Quantity Sold': int(quant),
-            price_column: netPrice,
-            "Number of Orders": len(matched_rows),
-            f'{price_column} Average': format(netPrice / quant, '.2f') if quant else '0.00'
-        }
-    
-    return summary
+        str_df = df.astype(str)
+        for keyword in keywords:
+            matched_indices = []
+            for col in str_df:
+                for index, entry in str_df[col].iteritems():
+                    words = entry.lower().split()
+                    if similarity(keyword, words, model) > 0.8:
+                        matched_indices.append(index)
+        
+            # Aggregate matched data
+            matched_rows = df.loc[set(matched_indices)]
+            rows = pd.concat([rows, matched_rows])
             
+            matched_rows[price_column] = matched_rows[price_column].astype(str).str.replace(',', '').astype(float)
+            matched_rows[quantity_column] = matched_rows[quantity_column].astype(str).str.replace(',', '').astype(float)
+
+            netPrice = matched_rows[price_column].sum()
+            quant = matched_rows[quantity_column].sum()
+
+            # Store results
+            summary[keyword] = {
+                'Quantity Sold': int(quant),
+                price_column: netPrice,
+                "Number of Orders": len(matched_rows),
+                f'{price_column} Average': format(netPrice / quant, '.2f') if quant else '0.00'
+            }
+        y += 1
+        ret[f"file{y}"] = summary
+        price_column = ''
+        quantity_column = ''
+    return ret
+
+def Word2vec(files, keywords, output_file):
+    print('young sheldon')
+    ret = {}
+    summary = {}
+    price_column = ''
+    quantity_column = ''
+    y = 0 
+    rows = pd.DataFrame()
+    # Identify specific columns
+    for df in files:
+        for column_name in df.columns:
+            if 'Price' in column_name or 'Total' in column_name and not price_column:
+                price_column = column_name
+            elif 'Quantity' in column_name and not quantity_column:
+                quantity_column = column_name
+            if price_column and quantity_column:
+                break
+    
+        summary = {}
+    # Convert DataFrame to string
+        str_df = df.astype(str)
+        for keyword in keywords:
+            matched_indices = []
+            for col in str_df:
+                for index, entry in str_df[col].iteritems():
+                    words = entry.lower().split()
+                    if similarity(keyword, words, model) > 0.9:
+                        matched_indices.append(index)
+        
+            # Aggregate matched data
+            if not price_column or not quantity_column:
+                raise ValueError("Required columns (Price or Quantity) not found in the DataFrame.")
+        
+            # Debugging: Print the identified columns
+            print(f"Identified price column: {price_column}")
+            print(f"Identified quantity column: {quantity_column}")
+            matched_rows = df.loc[set(matched_indices)]
+            rows = pd.concat([rows, matched_rows])
+            
+            #print(matched_rows[price_column])
+            matched_rows[price_column] = matched_rows[price_column].astype(str).str.replace(',', '').astype(float)
+            matched_rows[quantity_column] = matched_rows[quantity_column].astype(str).str.replace(',', '').astype(float)
+            
+            print(matched_rows[price_column])
+            
+            netPrice = matched_rows[price_column].sum()
+            quant = matched_rows[quantity_column].sum()
+
+            # Store results
+            summary[keyword] = {
+                'Quantity Sold': int(quant),
+                price_column: netPrice,
+                "Number of Orders": len(matched_rows),
+                f'{price_column} Average': format(netPrice / quant, '.2f') if quant else '0.00'
+            }
+        y += 1
+        ret[f"file{y}"] = summary
+        price_column = ''
+        quantity_column = ''
+    
+    summaries = pd.DataFrame(ret)
+    rows = pd.concat([summaries, rows])
+    rows.to_excel(output_file, index=False)
+    return ret
+             
+  
         
     
 
