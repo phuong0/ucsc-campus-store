@@ -44,6 +44,7 @@ function SignIn(props) {
         passcode: "",
     });
 
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -60,18 +61,18 @@ function SignIn(props) {
             if(userid)
             {
                 sessionStorage.setItem('userid', userid);
-                props.login(userid);
                 console.log("Login Successful");
+                window.location.href = "/home";
             }
             else
             {
-                console.error("Incorrect email or password.")
+                setError("Incorrect email or password.");
             }
         } catch (error) {
             // Handle the error
+            setError("Login Error: " + error.message);
             console.error("Login Error:", error);
         }
-        window.location.href = "/home";
     };
 
     return (
@@ -110,7 +111,7 @@ function SignIn(props) {
                     <Box
                         component="form"
                         noValidate
-                        onSubmit = {handleSubmit}
+                        onSubmit={handleSubmit}
                         sx={{ mt: 1 }}
                     >
                         <TextField
@@ -136,6 +137,11 @@ function SignIn(props) {
                             fullWidth
                             autoComplete="current-password"
                         />
+                        {error && (
+                            <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+                                {error}
+                            </Typography>
+                        )}
                         <Button
                             type="submit"
                             fullWidth
@@ -163,5 +169,6 @@ function SignIn(props) {
         </Grid>
     );
 }
+
 
 export default SignIn;
