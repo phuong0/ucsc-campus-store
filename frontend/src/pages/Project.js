@@ -35,7 +35,7 @@ export default function Project() {
         if (storedUserId) {
             setUserId(storedUserId);
         }
-        const storedProjectName = sessionStorage.getItem('projectname');
+        const storedProjectName = sessionStorage.getItem('selectedProject');
         if (storedProjectName) {
             setProjectName(storedProjectName);
         }
@@ -63,7 +63,7 @@ export default function Project() {
             fetchProjectIdAndFiles(storedUserId, storedProjectName);
         }
 
-    }, [historyFiles]);
+    }, []);
 
     function parameterizeArray(key, value) {
         return '?' + key + '=' + value;
