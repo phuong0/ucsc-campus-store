@@ -22,7 +22,7 @@ const originUrl = window.location.origin;
 
 const sections = [
     { title: "Home", url: originUrl + "/home" },
-    { title: "Log Out", url: originUrl + "/home" },
+    { title: "Log Out", url: originUrl + "/signin" },
 ];
 
 export default function Home() {

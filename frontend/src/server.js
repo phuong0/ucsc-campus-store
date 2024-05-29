@@ -217,7 +217,7 @@ export const word2vec = async (keywords, projectName, userid) => {
     }
 }
 
-export const word2vec_summary = async (keywords, projectName, userid) => {
+export const word2vecSummary = async (keywords, projectName, userid) => {
     try {
         const response = await fetch('http://127.0.0.1:8000/word2vec_summary', {
           method: 'POST',
