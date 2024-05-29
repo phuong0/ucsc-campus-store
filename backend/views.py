@@ -536,6 +536,8 @@ def store_projectid(request):
     # Return the fetched projectid in JSON format
     return JsonResponse({'projectid': projectid}, safe=False)
 
+@csrf_exempt
+
 def get_fileNames(request):
     userid = request.GET.get('userid')
     projectid = request.GET.get('projectid')
@@ -551,6 +553,8 @@ def get_fileNames(request):
 
     # Return the fetched data in JSON format
     return JsonResponse(file_names, safe=False)
+
+@csrf_exempt
 
 def get_projectid(request):
     userid = request.GET.get('userid')
