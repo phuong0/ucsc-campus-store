@@ -127,7 +127,7 @@ def similarity(keyword, words, model):
         for word in words:
             if word in model.key_to_index:
                 max_sim = max(max_sim, model.similarity(keyword, word))
-    print(max_sim)
+    # print(max_sim)
     return max_sim
 
  
