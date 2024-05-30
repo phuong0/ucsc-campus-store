@@ -16,7 +16,7 @@ import category from "../assets/category.png";
 import fullsearch from "../assets/magnifying.png";
 import ai from "../assets/ai.png";
 
-import {getcategories, categoryFile, fullTextFile, fullTextSummary, word2vec, word2vec_summary} from "../server"
+import {getcategories, categoryFile, fullTextFile, fullTextSummary, word2vec, word2vecSummary} from "../server"
 
 /*
 - files page
@@ -187,7 +187,7 @@ export default function File() {
                 throw new Error('Badly Formed String');
             }
             const keys = keywords.split(", ")
-            const response = await word2vec_summary(keys, sessionStorage.getItem('selectedProject'), userid);
+            const response = await word2vecSummary(keys, sessionStorage.getItem('selectedProject'), userid);
             if (!response.ok) {
               throw new Error('Failed to fetch');
             }
