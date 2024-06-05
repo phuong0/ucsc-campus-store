@@ -132,14 +132,13 @@ def similarity(keyword, words, model):
 
  
 def word2vec_Summary(files, keywords):
-    print('hello')
     ret = {}
     summary = {}
     price_column = ''
     quantity_column = ''
     y = 0 
     rows = pd.DataFrame()
-    print('we are in the summary')
+    # print('we are in the summary')
     # Identify specific columns
     for df in files:
         for column_name in df.columns:
@@ -159,11 +158,12 @@ def word2vec_Summary(files, keywords):
             for col in str_df:
                 for index, entry in str_df[col].iteritems():
                     words = entry.lower().split()
-                    if similarity(keyword, words, model) > 0.8:
+                    if similarity(keyword, words, model) > 0.6:
                         matched_indices.append(index)
         
             # Aggregate matched data
             matched_rows = df.loc[set(matched_indices)]
+            print(matched_rows)
             rows = pd.concat([rows, matched_rows])
             
             matched_rows[price_column] = matched_rows[price_column].astype(str).str.replace(',', '').astype(float)
@@ -186,7 +186,6 @@ def word2vec_Summary(files, keywords):
     return ret
 
 def Word2vec(files, keywords, output_file):
-    print('young sheldon')
     ret = {}
     summary = {}
     price_column = ''
@@ -211,17 +210,15 @@ def Word2vec(files, keywords, output_file):
             for col in str_df:
                 for index, entry in str_df[col].iteritems():
                     words = entry.lower().split()
-                    if similarity(keyword, words, model) > 0.9:
+                    if similarity(keyword, words, model) > 0.6:
                         matched_indices.append(index)
         
             # Aggregate matched data
             if not price_column or not quantity_column:
                 raise ValueError("Required columns (Price or Quantity) not found in the DataFrame.")
         
-            # Debugging: Print the identified columns
-            print(f"Identified price column: {price_column}")
-            print(f"Identified quantity column: {quantity_column}")
             matched_rows = df.loc[set(matched_indices)]
+            print(matched_rows)
             rows = pd.concat([rows, matched_rows])
             
             #print(matched_rows[price_column])
