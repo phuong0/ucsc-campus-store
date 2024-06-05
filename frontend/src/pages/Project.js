@@ -133,7 +133,7 @@ export default function Project() {
                         onClick={handleDone}
                         sx={{ marginLeft: "10px" }}
                     >
-                        Done
+                        Run Analysis
                     </Button>
                 </Grid>
             </Grid>
