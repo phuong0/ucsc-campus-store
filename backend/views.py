@@ -277,6 +277,7 @@ def word2vec_summary(request):
             
             data = json.loads(request.body.decode('utf-8'))
             keywords = data.get('keywords', [])
+            print('donkey monkey')
             summary = word2vec_Summary(dfs, keywords)
             return JsonResponse(summary, safe=False, status=200)
             
@@ -295,6 +296,8 @@ def word2vec(request):
         data = json.loads(request.body)
         projectName = data.get('projectName')
         userid = data.get('userid')
+        print('donkey monkey')
+        print(request)
         try:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT projectid FROM projects WHERE userid = %s AND projectname = %s", [userid, projectName])

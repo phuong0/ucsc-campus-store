@@ -183,6 +183,7 @@ def word2vec_Summary(files, keywords):
         ret[f"file{y}"] = summary
         price_column = ''
         quantity_column = ''
+        print(ret)
     return ret
 
 def Word2vec(files, keywords, output_file):
